@@ -1,14 +1,39 @@
-<!DOCTYPE html>
 <html>
 <head>
-
+    <title>LOD events eXplorer</title>
+    <link href="scripts/style.css" rel="stylesheet"></link>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script type='text/javascript' src="scripts/timeline.js"></script>
+    <script type='text/javascript' src="scripts/sparql.js"></script>
 </head>
 <body>
+<div class="title">
+<h1>LOD events eXplorer</h1>
+<h3>- Event visualizer for LOD dataset -</h3>
+</div>
 
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-    <script type='text/javascript' src="scripts/sparql.js"></script>
-    <script>
+<div class="outerwrapper">
 
-    </script>
+<div class="timeline">
+	<div class="timeline-header">
+		<h2><span class="timeline-heading"></span></h2>			
+		<p class="timeline-standfirst"></p>
+	</div>
+	<div class="tooltip">
+		<p></p>
+	</div>
+</div> <!-- timeline -->
+
+<div class="info-box">
+	<div class="panel"></div>
+</div>
+
+</div> <!-- outerwrapper -->
+
+<div class="forced" id="forced">
+	<script src="scripts/forced.js"></script>
+</div>
+
 </body>
 </html>
