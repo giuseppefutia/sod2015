@@ -54,9 +54,10 @@ With the second query, we have retrieved all the entities related to all the eve
 
 ## Future works
 
-* *Improve scalability*: for testing reasons, we have created SPARQL queries for retrieving all data necessary to create the visualizations. We want to identify cases for launching SPARQL queries when users interact with the visualizations to get specific data.
+* *Improving scalability*: for testing reasons, we have created SPARQL queries for retrieving all data necessary to create the visualizations. We want to identify cases for launching SPARQL queries when users interact with the visualizations to get specific data.
 * *Binding the timeline and the graph visualization*: when you click on an element of the timeline, the graph related to this specific event of the timeline is automatically generated on the visualization.
 * *Improve the graph as tool for exploring data*: we have developed a rough graph to represent entities related to a specific event. From this point, we want to visualize data related to a specific entity of the graph clicking on a specific node. For example, starting from a node, we want to see which organizations are involved, which other events they organize, and in which area of the Trentino regione. In this way we can also visualize some statistics related to this data, also to understand the potential quality of the event.
-* *Extend the Uduvudu templates*: during the hackathon we have discovered the potential of the Uduvudu project (https://github.com/uduvudu/uduvudu). We want to extend its templates with the visualizations developed on our project to improve the range of possible visualizations of RDF data.
+* *Using other datasets and APSIs*: for each event, we want to also visualize points of interest close to them. We also want to exploit entities extracted with the NER tool (represented with the skos:related properties), retrieving images using Wikipedia and WikiData APIS. In this way, the user can obtain a better understanding of the event's context.
+* *Extending the Uduvudu templates*: during the hackathon we have discovered the potential of the Uduvudu project (https://github.com/uduvudu/uduvudu). We want to extend its templates with the visualizations developed on our project to improve the range of possible visualizations of RDF data.
 
 <img src="lod-events-explorer.png" align="right" alt="Lod events eXplorer screenshot." />
