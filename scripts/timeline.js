@@ -1,4 +1,3 @@
-/*	An array to store all the data */
 function createTimeline(json) {
 
     var items = [];
@@ -8,27 +7,22 @@ function createTimeline(json) {
 
             /* Helper function to format and parse date from data */
             function getDate(d) {
-                /*	If d is a number or a string in the format Day Month Year
-		process it as normal. Other wise presume that it may be a string 
-		in the format Month Year and add 1 to the start so that Firefox
-		and safari can parse the date */
                 if (typeof d === "number") {
                     return new Date(d);
                 } else if (Date.parse(d)) {
                     return new Date(d);
-                } else {
+                } else { /* if no day we assume the first of the month */
                     return new Date("1 " + d);
                 }
             }
 
 
-            /* Hides the table and shows the SVG if javascript is enabled */
+            /* Header text; TODO it could be auto generated for automatization and having multiple dataset */
             $(".outerwrapper span.timeline-heading").text("Eventi della regione Trentino-Alto Adige");
             $(".outerwrapper p.timeline-standfirst").text("Timeline degli eventi che hanno luogo nella regione Trentino-Alto Adige.");
 
-            /*	Add a prorerty to the objects for each column in the table/bit of info we want to show
-					i.e date, headline, the text, image link and credit */
-            for (var i = 0; i < 10; i++) { //TODO json.length
+            /* Populating items with json data */
+            for (var i = 0; i < 10; i++) { //XXX json.length is the way, we've reduced because too high
                 items[i] = new Object;
                 items[i].dateStart = json[i].dateStart;
                 items[i].dateEnd = json[i].dateEnd;
@@ -38,7 +32,11 @@ function createTimeline(json) {
                 items[i].text = json[i].title;
             }
 
-            /*	Insert an .event div for each event */
+            /*  Order items by start date */
+            items.sort(function(a,b) { return a.dateStart.localeCompare(b.dateStart) } );
+
+
+            /*	Insert an .event div for each event with the text we want to show */
             for (var i = 0; i < items.length; i++) {
                 $(".outerwrapper .info-box .panel").append('<div class="event-' + i + '"></div>');
             };
@@ -68,8 +66,6 @@ function createTimeline(json) {
 
             };
 
-            $('.info-box').append('<p><script src="forced.js"></script></p>');
-
             var eventWidth = $('.outerwrapper .info-box').width();
 
             var position = 0;
@@ -84,7 +80,6 @@ function createTimeline(json) {
             /* All of the D3/svg code is contained within the callback function */
             /* Loading D3 via a html script tag into ie6-8 will to cause a runtime error */
             $.getScript("http://d3js.org/d3.v3.min.js", function() {
-                /*	Define the dimensions of the SVG */
                 var duration = 200;
                 var marginTop = 5;
                 var marginRight = 0;
@@ -100,13 +95,13 @@ function createTimeline(json) {
                 var maxZoom = 10;
                 var zoomIncrement = 1;
 
-                /*	A global variable to control which event/location to show */
+                /* A global variable to control which event/location to show */
                 var counter = 0;
 
-                /*	A global variable to control the amout of ticks visible */
+                /* A global variable to control the amout of ticks visible */
                 var ticks = 8;
 
-                /*	Find the earliest and latest time in the range */
+                /* Find the earliest and latest time in the range */
                 var timeFirst = d3.min(items, function(d) {
                     return d.date1;
                 });
@@ -114,11 +109,11 @@ function createTimeline(json) {
                     return d.date2;
                 });
 
-                /*	Work out the time span of the whole timeline in miliseconds plus one tenth of this value */
+                /* Work out the time span of the whole timeline in miliseconds plus one tenth of this value */
                 var timeDiff = timeLast - timeFirst;
                 timeDiff = timeDiff + (timeDiff * 0.1);
 
-                /*	Extend the time range before the first date and after the last date 
+                /* Extend the time range before the first date and after the last date 
 						to make for a more attractive timeline */
                 var timeBegin = getDate(items[counter].date1.getTime() - timeDiff);
                 var timeEnd = getDate(items[counter].date1.getTime() + timeDiff);
@@ -128,7 +123,7 @@ function createTimeline(json) {
                     .domain([timeBegin, timeEnd])
                     .range([0, width]);
 
-                /*	Create the SVG and its elements */
+                /* Create the SVG and its elements */
                 var chart = d3.select(".timeline")
                     .append("svg")
                     .attr("width", width + marginRight + marginLeft)
@@ -136,7 +131,7 @@ function createTimeline(json) {
                     .attr("class", "chart");
 
 
-                /*	Draw the four icons for zooming and moving through the time line as well as their enclosing
+                /* Draw the four icons for zooming and moving through the time line as well as their enclosing
 						rects. Add functionality for hover and click. */
                 var zoomInIcon = chart.append("path")
                     .attr("d", "M22.646,19.307c0.96-1.583,1.523-3.435,1.524-5.421C24.169,8.093,19.478,3.401,13.688,3.399C7.897,3.401,3.204,8.093,3.204,13.885c0,5.789,4.693,10.481,10.484,10.481c1.987,0,3.839-0.563,5.422-1.523l7.128,7.127l3.535-3.537L22.646,19.307zM13.688,20.369c-3.582-0.008-6.478-2.904-6.484-6.484c0.006-3.582,2.903-6.478,6.484-6.486c3.579,0.008,6.478,2.904,6.484,6.486C20.165,17.465,17.267,20.361,13.688,20.369zM15.687,9.051h-4v2.833H8.854v4.001h2.833v2.833h4v-2.834h2.832v-3.999h-2.833V9.051z")
@@ -273,7 +268,7 @@ function createTimeline(json) {
                             .style("opacity", 0.2);
                     });
 
-                /*	Prepare a cliping path to stop the locations and scales breaking spilling over the edges
+                /* Prepare a cliping path to stop the locations and scales breaking spilling over the edges
 						of the SVG in IE */
                 chart.append("defs").append("clipPath")
                     .attr("id", "clip")
@@ -289,6 +284,7 @@ function createTimeline(json) {
                     .attr("y", (height - miniHeight))
                     .attr("width", width)
                     .attr("height", miniHeight)
+                    .attr("fill", "#FFFFFF")
                     .style("opacity", 0.5);
 
                 var miniHolder = chart.append("g")
@@ -336,13 +332,13 @@ function createTimeline(json) {
                     .call(xDayAxis);
 
 
-                /* draw the static triangle to act as a pointer */
+                /* Draw the static triangle to act as a pointer */
                 chart.append("path")
                     .attr("d", "M10,0 L20,20 L0,20z")
                     .style("pointer-events", "none")
                     .attr("transform", "translate(" + ((width / 2) - 10) + "," + height + ")");
 
-                /* 	Add rect for each point on the timeline */
+                /* Add rect for each point on the timeline */
                 var locations = mini.append("g").selectAll("rect")
                     .data(items)
                     .enter()
@@ -358,8 +354,8 @@ function createTimeline(json) {
                         return x(d.date1);
                     })
                     .attr("y", function(d, i) {
-                        /*	Work out if the first date of the current range overlaps the last date of the previous
-								if so move the current rect down so that there is no overlap*/
+                        /* Work out if the first date of the current range overlaps the last date of the previous
+							if so move the current rect down so that there is no overlap*/
                         var prev = 0;
 
                         if (i > 0) {
@@ -380,8 +376,7 @@ function createTimeline(json) {
                             return x(d.date2) - x(d.date1);
                         } else {
                             /* 	if no end date is specified add 86,400,000 milliseconds (1 day) to the first
-									date to create a span of time for the width
-									but make sure that it is at least 4 px wide */
+				date to create a span of time for the width but make sure that it is at least 4 px wide */
                             var thisWidth = x(getDate(d.date1.getTime() + 86400000)) - x(d.date1);
 
                             if (thisWidth < 4) {
@@ -392,7 +387,7 @@ function createTimeline(json) {
                         }
                     })
                     .attr("height", function(d, i) {
-                        /*	Work out if the first date of the current range overlaps the last date of the previous
+                        /* Work out if the first date of the current range overlaps the last date of the previous
 								if so half the height of the block to accomadate */
                         var prev = 0;
                         var next;
