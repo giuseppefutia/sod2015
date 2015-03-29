@@ -4,13 +4,17 @@ This project has been developed during the LOD hackathon organized in Bologna (M
 
 ## Description
 
-[TODO]
+In this project we wanted to create an interactive visualization to represent Trentino's events data made available during the hackathon. On the one hand we have developed a timeline on which binding these data for exploring initiatives in a specific period of time. On the other hand, we have started to create a graph in order to use the RDF representation for exploring data.
+
+About technology aspects, we have used jQuery for making query to the endpoint SPARQL of the Fusepool platform and D3.js for data visualization.
+
+In the following sections, we explaing which data we have used and the future works on this project.
 
 ## Linked Data from Fusepool P3 platform
 
 In order to create our D3.js visualization, we have used the SPARQL endpoint exposed by the Fusepool platform. In particular we have defined 2 different queries. 
 
-With the first query, we have retrieved all events from the Trentino dataset, including the start date and the end date. Therefore, we have binded these data on a timeline.
+With the first query, we have retrieved all events from the Trentino datasets, including the start date and the end date. Therefore, we have binded these data on a timeline.
 
 	PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 	PREFIX schema: <http://schema.org/>
@@ -47,3 +51,12 @@ With the second query, we have retrieved all the entities related to all the eve
   		?object rdfs:label ?objectLabel .
   	FILTER( lang(?title)="it" )
 	}
+
+## Future works
+
+* *Improve scalability*: for testing reasons, we have created SPARQL queries for retrieving all data necessary to create the visualizations. We want to identify cases for launching SPARQL queries when users interact with the visualizations to get specific data.
+* *Binding the timeline and the graph visualization*: when you click on an element of the timeline, the graph related to this specific event of the timeline is automatically generated on the visualization.
+* *Improve the graph as tool for exploring data*: we have developed a rough graph to represent entities related to a specific event. From this point, we want to visualize data related to a specific entity of the graph clicking on a specific node. For example, starting from a node, we want to see which organizations are involved, which other events they organize, and in which area of the Trentino regione. In this way we can also visualize some statistics related to this data, also to understand the potential quality of the event.
+* *Extend the Uduvudu templates*: during the hackathon we have discovered the potential of the Uduvudu project (https://github.com/uduvudu/uduvudu). We want to extend its templates with the visualizations developed on our project to improve the range of possible visualizations of RDF data.
+
+<img src="lod-events-explorer.png" align="right" alt="Lod events eXplorer screenshot." />
