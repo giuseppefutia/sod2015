@@ -4,28 +4,24 @@ var util = require('util');
 
 // Define an object for manage data from Fusepool Platform.
 
-// To use Uduvudu I need to build a RDF Graph with a SPARQL Construct query
-
 var FP = {};
 FP.query = {};
 FP.host = "sandbox.fusepool.info";
 FP.query.allEvents = encodeURIComponent("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
-					"PREFIX schema: <http://schema.org/> " +
-					"PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> " +
-					"PREFIX dbo: <http://it.dbpedia.org/ontology> " +
-					"PREFIX skos: <http://www.w3.org/2004/02/skos/core#> " +
-					"CONSTRUCT {?subject schema:description ?title . " + 
-								"? subject rdfs:label ?headline . " +
-					"} " +
-					"FROM <http://sandbox.fusepool.info:8181/ldp/wr-ldpc/Trentino-Events-1/eventi-xml-xml-transformed> " +
-					"WHERE { " +
-  						"?subject a schema:Event ; " +
-             			"schema:description ?title ; " +
-             			"rdfs:label ?headline;" +
-             			"schema:startDate ?dateStart ; " +
-             			"schema:endDate ?dateEnd . " +
-  						"FILTER( lang(?title)='it' ) " +
-					"}");
+          "PREFIX schema: <http://schema.org/> " +
+          "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> " +
+          "PREFIX dbo: <http://it.dbpedia.org/ontology> " +
+          "PREFIX skos: <http://www.w3.org/2004/02/skos/core#> " +
+          "SELECT ?subject ?headline ?title ?dateStart ?dateEnd " +
+          "FROM <http://sandbox.fusepool.info:8181/ldp/wr-ldpc/Trentino-Events-1/eventi-xml-xml-transformed> " +
+          "WHERE { " +
+              "?subject a schema:Event ; " +
+                  "schema:description ?title ; " +
+                  "rdfs:label ?headline;" +
+                  "schema:startDate ?dateStart ; " +
+                  "schema:endDate ?dateEnd . " +
+              "FILTER( lang(?title)='it' ) " +
+          "}");
 
 FP.query.eventsProperties = "none";
 
@@ -39,7 +35,7 @@ app.get('/allEvents', function (request, response) {
 
 	var options = {
         host: FP.host,
-        path: "/sparql/select?query=" + FP.query.allEvents + "&writer=xml",
+        path: "/sparql/select?query=" + FP.query.allEvents + "&output=json",
         port: '8181',
         method: 'GET',
     };
