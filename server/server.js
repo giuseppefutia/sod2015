@@ -21,21 +21,39 @@ FP.query.allEvents = encodeURIComponent("PREFIX rdfs: <http://www.w3.org/2000/01
     "FILTER( lang(?title)='it' ) " +
     "}");
 
-FP.query.eventsProperties = "none";
+FP.query.singleEventProperties = function (eventURI) {
+    return encodeURIComponent("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
+        "PREFIX schema: <http://schema.org/> " +
+        "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> " +
+        "PREFIX dbo: <http://it.dbpedia.org/ontology> " +
+        "PREFIX skos: <http://www.w3.org/2004/02/skos/core#> " +
+        "CONSTRUCT {<" + eventURI + "> ?property ?hasValue } " +
+        "WHERE { <" + eventURI + "> ?property ?hasValue } ");
+}
 
-var app = express();
+FP.query.closerPOI = function (lowLat, highLat, lowLong, highLong) { //For testing (46.05, 46.07, 11.12, 11.14)  
+    return encodeURIComponent("PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> " +
+        "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
+        "PREFIX schema: <http://schema.org/> " +
+        "PREFIX dct: <http://purl.org/dc/terms/> " +
+        "CONSTRUCT { ?subject ?property ?object .} " +
+        "FROM <http://sandbox.fusepool.info:8181/ldp/trentino-point-of-interest-ttl> " +
+        "WHERE { " +
+        "?subject ?property ?object ; " +
+        "geo:lat ?lat ; " +
+        "geo:long ?long . " +
+        "FILTER (?lat >= '" + lowLat + "'^^xsd:double && ?lat <= '" + highLat + "'^^xsd:double && ?long >= '" + lowLong + "'^^xsd:double && ?long <= '" + highLong + "'^^xsd:double) " +
+        "}");
+}
 
-app.use(express.static('../'));
-
-app.get('/allEvents', function(request, response) {
-
+FP.launchSparqlQuery = function (request, response, query) {
     var result = "";
 
     var options = {
         host: FP.host,
-        path: "/sparql/select?query=" + FP.query.allEvents + "&output=html",
-        port: '8181',
-        method: 'GET',
+        path: "/sparql/select?query=" + query + "&output=json",
+        port: "8181",
+        method: "GET",
     };
 
     var req = http.request(options, function(res) {
@@ -56,7 +74,24 @@ app.get('/allEvents', function(request, response) {
     });
 
     req.end();
+}
 
+var app = express();
+
+app.use(express.static('../'));
+
+app.get('/allEvents', function (request, response) {
+    FP.launchSparqlQuery(request, response, FP.query.allEvents);
+});
+
+app.get('/eventProperties/:uri', function (request, response) {
+    FP.launchSparqlQuery(request, response, FP.query.singleEventProperties(request.param("uri")));
+});
+
+app.get('/closerPOI', function (request, response) {
+    FP.launchSparqlQuery(request, response, FP.query.closerPOI(request.param("lowLat"), request.param("highLat"), request.param("lowLong"), request.param("highLong")));
+
+    console.info(FP.query.closerPOI(request.param("lowLat"), request.param("highLat"), request.param("lowLong"), request.param("highLong")));
 });
 
 var server = app.listen(3000, function() {
