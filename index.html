@@ -18,24 +18,6 @@
 <h3>- Event visualizer for LOD dataset -</h3>
 </div>
 
-<div class="outerwrapper">
-
-<div class="timeline">
-    <div class="timeline-header">
-        <h2><span class="timeline-heading"></span></h2>         
-        <p class="timeline-standfirst"></p>
-    </div>
-    <div class="tooltip">
-        <p></p>
-    </div>
-</div> <!-- timeline -->
-
-<div class="info-box">
-    <div class="panel"></div>
-</div>
-
-</div> <!-- outerwrapper -->
-
 <div class="forced" id="forced">
     <script src="scripts/forced.js"></script>
 </div>
@@ -47,7 +29,7 @@
     <script type="text/javascript">
         // instantiate rdf-ext object
         var store = new rdf.LdpStore();
-        var source = 'dumps/events.ttl';
+        var source = 'dumps/events.ttl'; 
 
        // something about what is going on
         document.getElementById('main').innerHTML =  ''
@@ -64,18 +46,19 @@
                 if (error == null) {
                     console.debug("successfully loaded "+graph.toArray().length+" triples");
                     // resource (entry for template search) is same as source in this example
-                    uduvudu.process(graph, {'resource': source} , function (out) {
+                    uduvudu.process(graph, {'resource': "urn:event:uuid:fc52e206-e041-4ca9-a897-6525f9b84e51"} , function (out) {
                         // write the result of the processing in the main div
                         $('#main').html(out);
                         });
-                    } else {
-                        document.getElementById('main').innerHTML =  ''
-                        + '<div class="alert alert-danger">'
-                        + '  <button type="button" class="close" data-dismiss="alert">&times;</button>'
-                        + '  <strong>Error:</strong> '+ error +'.'
-                        + '</div>';
-                    };
+                } else {
+                    document.getElementById('main').innerHTML =  ''
+                    + '<div class="alert alert-danger">'
+                    + '  <button type="button" class="close" data-dismiss="alert">&times;</button>'
+                    + '  <strong>Error:</strong> '+ error +'.'
+                    + '</div>';
+                };
             });
+
     </script>
 
 </body>
