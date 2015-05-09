@@ -46,11 +46,12 @@ exports.closerPOI = function (lowLat, highLat, lowLong, highLong) { //For testin
 }
 
 exports.launchSparqlQuery = function (request, response, query) {
+
     var result = "";
 
     var options = {
         host: host,
-        path: "/sparql/select?query=" + query + "&output=json",
+        path: "/sparql/select?query=" + query() + "&output=json",
         port: "8181",
         method: "GET",
     };
