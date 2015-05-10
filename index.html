@@ -1,30 +1,52 @@
-<html>
+<!DOCTYPE html>
 <head>
     <title>LOD events eXplorer</title>
-    <link href="scripts/style.css" rel="stylesheet"></link>
-    <link href="uduvudu/lib/bootstrap.min.css" rel="stylesheet">
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
+    <link href="scripts/style.css" rel="stylesheet">
+</head>
+<body>
+
+<header class="masthead">
+    <h1 class="text-center">LOD events eXplorer</h1>
+    <p class="lead text-center">- Event visualizer for LOD dataset -</p>
+</header>
+
+<!-- Fly-in navbar -->
+<div class="navbar navbar-inverse navbar-static-top" id="nav">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+      </div>
+      <div class="collapse navbar-collapse">
+        <ul class="nav navbar-nav">
+          <li><a href="#">Home</a></li>
+          <li><a href="#timeline">Timeline</a></li>
+          <li><a href="#infobox">Infobox</a></li>
+          <li><a href="#map">Map</a></li>
+          <li><a href="#graph">Graph</a></li>
+        </ul>
+      </div><!--/.nav-collapse -->
+    </div><!--/.container -->
+</div><!--/.navbar -->
+  
+<!-- Begin page content -->
+<div id="main"></div> <!-- From uduvudu -->
+<div id="templates"></div> <!-- From uduvudu -->
+
+<!-- Script zone -->
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <script src="scripts/navbar.js" type="text/javascript"></script>
     <script src="http://d3js.org/d3.v3.min.js"></script>
-    <script type='text/javascript' src="scripts/timeline.js"></script>
     <script src="uduvudu/lib/underscore-min.js" type="text/javascript"></script>
     <script src="uduvudu/lib/jquery-2.1.3.min.js" type="text/javascript"></script>
     <script src="uduvudu/lib/rdf-ext.min.js"></script>
     <script src="uduvudu/matcher.js" type="text/javascript"></script>
     <script src="uduvudu/src/uduvudu.js" type="text/javascript"></script>
-</head>
-<body>
-<div class="title">
-<h1>LOD events eXplorer</h1>
-<h3>- Event visualizer for LOD dataset -</h3>
-</div>
-
-<div class="forced" id="forced">
-    <script src="scripts/forced.js"></script>
-</div>
-
-<div id="main"></div>
-
-<div id="templates"></div>
 
     <script type="text/javascript">
         // instantiate rdf-ext object
