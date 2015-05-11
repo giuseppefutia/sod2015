@@ -1,7 +1,7 @@
 html,
 body {
-  height: 100%;
-  padding-top:50px;
+    height: 100%;
+    padding-top:50px;
 }
 
 header {
@@ -10,35 +10,38 @@ header {
 }
 
 #topNav {
-	z-index:-1;
+    z-index:-1;
 }
 
 #nav {
-  width: 100%;
+    width: 100%;
 }
 
 #nav.affix-top {
-   position: absolute;
-   top:0;
-   left:0;
-   z-index:10;
-   height:54px;
-   background-color:transparent;
-   border:1;
+    position: absolute;
+    top:0;
+    left:0;
+    z-index:10;
+    height:54px;
+    background-color:#000;
 }
 
 #nav.affix {
-   position: fixed;
-   top: 0;
-   z-index:10;
-   -webkit-transition: all .6s ease-in-out;
+    position: fixed;
+    top: 0;
+    z-index:10;
+    -webkit-transition: all .6s ease-in-out;
 }
  
 .navbar-nav {
-  margin: 1px 1px; 
+    margin: 1px 1px; 
 }  
 
 .navbar-toggle {
-	outline:0;
+    outline:0;
+}
+
+.navbar { 
+    background-color: #f8f8f8;
 }
 
