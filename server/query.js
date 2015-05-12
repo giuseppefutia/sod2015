@@ -26,8 +26,19 @@ exports.allEvents = function() {
 
 exports.singleEventProperties = function(eventURI) {
     return encodeURIComponent(prefixes +
-        "CONSTRUCT {<" + eventURI + "> ?property ?hasValue } " +
-        "WHERE { <" + eventURI + "> ?property ?hasValue } ");
+        "CONSTRUCT {<" + eventURI + "> ?eventProperty ?eventValue ." +
+        "?location ?locationProperty ?locationValue . " + 
+        "?organizer ?organizerProperty ?organizerValue . " +
+        "?address ?addressProperty ?addressValue. } " +
+        "FROM <http://sandbox.fusepool.info:8181/ldp/wr-ldpc/Trentino-Events-1/eventi-xml-xml-transformed> " +
+        "WHERE { <" + eventURI + "> ?eventProperty ?eventValue ; " +
+        "schema:location ?location ; " +
+        "schema:organizer ?organizer . " +
+        "?location ?locationProperty ?locationValue . " +
+        "?location schema:address ?address . " +
+        "?address ?addressProperty ?addressValue . " +
+        "?organizer ?organizerProperty ?organizerValue . " +
+        " } ");
 }
 
 exports.closerPOI = function(lowLat, highLat, lowLong, highLong) { //For testing (46.05, 46.07, 11.12, 11.14)  
@@ -40,7 +51,7 @@ exports.closerPOI = function(lowLat, highLat, lowLong, highLong) { //For testing
         "geo:long ?long . " +
         "FILTER (?lat >= '" + lowLat + "'^^xsd:double && ?lat <= '" + highLat + "'^^xsd:double && ?long >= '" + lowLong + "'^^xsd:double && ?long <= '" + highLong + "'^^xsd:double) " +
         "}");
-}
+}   
 
 exports.launchSparqlQuery = function (request, response, query) {
 
@@ -48,7 +59,7 @@ exports.launchSparqlQuery = function (request, response, query) {
 
     var options = {
         host: host,
-        path: "/sparql/select?query=" + query(),
+        path: "/sparql/select?query=" + (typeof(query) === "function" ? query() : query), /// XXX
         port: "8181",
         method: "GET",
         headers: {
