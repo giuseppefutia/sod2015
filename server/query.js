@@ -2,12 +2,16 @@ var http = require('http');
 
 var host = "sandbox.fusepool.info";
 
-exports.allEvents = function () {
-    return encodeURIComponent("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
+var prefixes = "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
         "PREFIX schema: <http://schema.org/> " +
         "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> " +
         "PREFIX dbo: <http://it.dbpedia.org/ontology> " +
         "PREFIX skos: <http://www.w3.org/2004/02/skos/core#> " +
+        "PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> " +
+        "PREFIX dct: <http://purl.org/dc/terms/> ";
+
+exports.allEvents = function() {
+    return encodeURIComponent(prefixes +
         "CONSTRUCT {?subject rdfs:label ?headline} " +
         "FROM <http://sandbox.fusepool.info:8181/ldp/wr-ldpc/Trentino-Events-1/eventi-xml-xml-transformed> " +
         "WHERE { " +
@@ -20,21 +24,14 @@ exports.allEvents = function () {
         "}");
 }
 
-exports.singleEventProperties = function (eventURI) {
-    return encodeURIComponent("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
-        "PREFIX schema: <http://schema.org/> " +
-        "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> " +
-        "PREFIX dbo: <http://it.dbpedia.org/ontology> " +
-        "PREFIX skos: <http://www.w3.org/2004/02/skos/core#> " +
+exports.singleEventProperties = function(eventURI) {
+    return encodeURIComponent(prefixes +
         "CONSTRUCT {<" + eventURI + "> ?property ?hasValue } " +
         "WHERE { <" + eventURI + "> ?property ?hasValue } ");
 }
 
-exports.closerPOI = function (lowLat, highLat, lowLong, highLong) { //For testing (46.05, 46.07, 11.12, 11.14)  
-    return encodeURIComponent("PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> " +
-        "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
-        "PREFIX schema: <http://schema.org/> " +
-        "PREFIX dct: <http://purl.org/dc/terms/> " +
+exports.closerPOI = function(lowLat, highLat, lowLong, highLong) { //For testing (46.05, 46.07, 11.12, 11.14)  
+    return encodeURIComponent(prefixes +
         "CONSTRUCT { ?subject ?property ?object .} " +
         "FROM <http://sandbox.fusepool.info:8181/ldp/trentino-point-of-interest-ttl> " +
         "WHERE { " +
