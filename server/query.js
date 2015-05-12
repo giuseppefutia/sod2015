@@ -4,20 +4,20 @@ var host = "sandbox.fusepool.info";
 
 exports.allEvents = function () {
     return encodeURIComponent("PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
-    "PREFIX schema: <http://schema.org/> " +
-    "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> " +
-    "PREFIX dbo: <http://it.dbpedia.org/ontology> " +
-    "PREFIX skos: <http://www.w3.org/2004/02/skos/core#> " +
-    "CONSTRUCT {?subject rdfs:label ?headline} " +
-    "FROM <http://sandbox.fusepool.info:8181/ldp/wr-ldpc/Trentino-Events-1/eventi-xml-xml-transformed> " +
-    "WHERE { " +
-    "?subject a schema:Event ; " +
-    "schema:description ?title ; " +
-    "rdfs:label ?headline;" +
-    "schema:startDate ?dateStart ; " +
-    "schema:endDate ?dateEnd . " +
-    "FILTER( lang(?title)='it' ) " +
-    "}");
+        "PREFIX schema: <http://schema.org/> " +
+        "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> " +
+        "PREFIX dbo: <http://it.dbpedia.org/ontology> " +
+        "PREFIX skos: <http://www.w3.org/2004/02/skos/core#> " +
+        "CONSTRUCT {?subject rdfs:label ?headline} " +
+        "FROM <http://sandbox.fusepool.info:8181/ldp/wr-ldpc/Trentino-Events-1/eventi-xml-xml-transformed> " +
+        "WHERE { " +
+        "?subject a schema:Event ; " +
+        "schema:description ?title ; " +
+        "rdfs:label ?headline;" +
+        "schema:startDate ?dateStart ; " +
+        "schema:endDate ?dateEnd . " +
+        "FILTER( lang(?title)='it' ) " +
+        "}");
 }
 
 exports.singleEventProperties = function (eventURI) {
@@ -51,9 +51,12 @@ exports.launchSparqlQuery = function (request, response, query) {
 
     var options = {
         host: host,
-        path: "/sparql/select?query=" + query() + "&output=json",
+        path: "/sparql/select?query=" + query(),
         port: "8181",
         method: "GET",
+        headers: {
+            accept: "text/turtle"
+        } 
     };
 
     var req = http.request(options, function(res) {
