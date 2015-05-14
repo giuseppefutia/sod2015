@@ -18,7 +18,7 @@ header {
     width: 100%;
     top:0;
     left:0;
-    z-index:10;
+    z-index:1000;
     height:54px;
     background-color:#f8f8f8;
 }
@@ -29,4 +29,11 @@ header {
 
 .navbar-toggle {
     outline:0;
+}
+
+/* OpenLayer OSM attribution fix */
+div.olControlAttribution, div.olControlScaleLine {
+    font-family: Verdana;
+    font-size: 0.7em;
+    bottom: 1px;
 }
