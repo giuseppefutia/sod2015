@@ -12,7 +12,10 @@ var prefixes = "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
 
 exports.allEvents = function() {
     return encodeURIComponent(prefixes +
-        "CONSTRUCT {?subject rdfs:label ?headline} " +
+        "CONSTRUCT {?subject rdfs:label ?headline . " +
+        "?subject schema:startDate ?dateStart . " +
+        "?subject schema:endDate ?dateEnd . " +
+        "} " +
         "FROM <http://sandbox.fusepool.info:8181/ldp/wr-ldpc/Trentino-Events-1/eventi-xml-xml-transformed> " +
         "WHERE { " +
         "?subject a schema:Event ; " +
