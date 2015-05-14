@@ -1,12 +1,12 @@
 html,
 body {
     height: 100%;
-    padding-top:50px;
+    padding-top:35px;
 }
 
 header {
     min-height:100px;
-    padding-bottom:100px;
+    padding-bottom:20px;
 }
 
 #topNav {
@@ -14,23 +14,13 @@ header {
 }
 
 #nav {
+    position: fixed;
     width: 100%;
-}
-
-#nav.affix-top {
-    position: absolute;
     top:0;
     left:0;
     z-index:10;
     height:54px;
-    background-color:#000;
-}
-
-#nav.affix {
-    position: fixed;
-    top: 0;
-    z-index:10;
-    -webkit-transition: all .6s ease-in-out;
+    background-color:#f8f8f8;
 }
  
 .navbar-nav {
@@ -40,8 +30,3 @@ header {
 .navbar-toggle {
     outline:0;
 }
-
-.navbar { 
-    background-color: #f8f8f8;
-}
-

@@ -9,7 +9,14 @@
     <header class="masthead">
         <h1 class="text-center">LOD events eXplorer</h1>
         <p class="lead text-center">- Event visualizer for LOD dataset -</p>
+        <p class="text-center">The aim of this framework is to consume/render roughly the amount of triples which can be presented on one page or one screen. [TO BE IMPROVED]</p>
     </header>
+
+    <div class="container"> <!-- Add new container to center the visualization -->
+        <div id="alerts"></div>
+        <div id="main"></div>
+        <div id="footer"></div> <!-- Entities not matched by uduvudu -->
+    </div>
 
 <!-- Fly-in navbar -->
     <div class="navbar navbar-static-top" id="nav">
@@ -32,15 +39,10 @@
           </div><!--/.nav-collapse -->
         </div><!--/.container -->
     </div><!--/.navbar -->
-    
-    <div class="container"> <!-- Add new container to center the visualization -->
-        <div id="alerts"></div>
-        <div id="main"></div>
-        <div id="footer"></div> <!-- From uduvudu -->
-    </div>  
-    <div id="templates"></div> <!-- From uduvudu -->
 
 <!-- Script zone -->
+    <div id="templates"></div> <!-- Templates scripts from uduvudu -->
+
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
     <script src="scripts/navbar.js" type="text/javascript"></script>
