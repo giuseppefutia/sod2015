@@ -3,7 +3,7 @@ var store = new rdf.LdpStore();
 var source = 'http://localhost:3000/allEvents'; 
 
 // something about what is going on
-document.getElementById('main').innerHTML =  ''
+document.getElementById('alerts').innerHTML =  ''
     + '<div class="alert alert-info">'
     + '  <button type="button" class="close" data-dismiss="alert">&times;</button>'
     + '  <strong>Loading</strong> '+source+' is being loaded ...'
@@ -19,10 +19,10 @@ store.graph(source, function (graph, error) {
         // resource (entry for template search) is same as source in this example
         uduvudu.process(graph, {'resource': "urn:event:uuid:fc52e206-e041-4ca9-a897-6525f9b84e51"} , function (out) {
             // write the result of the processing in the main div
-            $('#main').html(out);
+            $('#footer').html(out);
         });
     } else {
-        document.getElementById('main').innerHTML =  ''
+        document.getElementById('alerts').innerHTML =  ''
             + '<div class="alert alert-danger">'
             + '  <button type="button" class="close" data-dismiss="alert">&times;</button>'
             + '  <strong>Error:</strong> '+ error +'.'
@@ -33,9 +33,10 @@ store.graph(source, function (graph, error) {
 
 var eventStore = new rdf.LdpStore();
 var eventResource = "urn:event:uuid:4f93f7d5-0f31-485b-b133-b1ddf189b90c" // It is only an example
-var eventSource = 'http://localhost:3000/eventProperties/' + eventResource; 
+var eventLocation = "urn:location:uuid:4f93f7d5-0f31-485b-b133-b1ddf189b90c"
+var eventSource = 'http://localhost:3000/eventProperties/' + eventResource;  // "dumps/event.ttl" 
 
-document.getElementById('infobox').innerHTML =  ''
+document.getElementById('alerts').innerHTML =  ''
     + '<div class="alert alert-info">'
     + '  <button type="button" class="close" data-dismiss="alert">&times;</button>'
     + '  <strong>Loading</strong> '+eventSource+' is being loaded ...'
@@ -47,10 +48,10 @@ document.getElementById('infobox').innerHTML =  ''
         // resource (entry for template search) is same as source in this example
         uduvudu.process(graph, {'resource': eventResource} , function (out) {
             // write the result of the processing in the main div
-            $('#infobox').html(out);
+            $('#main').html(out);
             });
     } else {
-        document.getElementById('infobox').innerHTML =  ''
+        document.getElementById('alerts').innerHTML =  ''
         + '<div class="alert alert-danger">'
         + '  <button type="button" class="close" data-dismiss="alert">&times;</button>'
         + '  <strong>Error:</strong> '+ error +'.'
