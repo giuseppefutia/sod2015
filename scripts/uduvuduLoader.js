@@ -1,13 +1,25 @@
+// something about what is going on
+var alertInfo = function (source) {
+    document.getElementById('alerts').innerHTML =  ''
+        + '<div class="alert alert-info">'
+        + '  <button type="button" class="close" data-dismiss="alert">&times;</button>'
+        + '  <strong>Loading</strong> '+source
+        + '</div>';
+};
+
+var alertDanger = function (error) {
+    document.getElementById('alerts').innerHTML =  ''
+        + '<div class="alert alert-danger">'
+        + '  <button type="button" class="close" data-dismiss="alert">&times;</button>'
+        + '  <strong>Error:</strong> '+ error +'.'
+        + '</div>';
+};
+
 // instantiate rdf-ext object
 var store = new rdf.LdpStore();
 var source = 'http://localhost:3000/allEvents'; 
 
-// something about what is going on
-document.getElementById('alerts').innerHTML =  ''
-    + '<div class="alert alert-info">'
-    + '  <button type="button" class="close" data-dismiss="alert">&times;</button>'
-    + '  <strong>Loading</strong> '+source+' is being loaded ...'
-    + '</div>';
+alertInfo(source);
 
 // prepare visualizer templates for uduvudu
 $("#templates").load("/uduvudu/templates.html");
@@ -22,11 +34,7 @@ store.graph(source, function (graph, error) {
             $('#footer').html(out);
         });
     } else {
-        document.getElementById('alerts').innerHTML =  ''
-            + '<div class="alert alert-danger">'
-            + '  <button type="button" class="close" data-dismiss="alert">&times;</button>'
-            + '  <strong>Error:</strong> '+ error +'.'
-            + '</div>';
+        alertDanger(error);
     };
 });
 
@@ -36,11 +44,7 @@ var eventResource = "urn:event:uuid:4f93f7d5-0f31-485b-b133-b1ddf189b90c" // It 
 var eventLocation = "urn:location:uuid:4f93f7d5-0f31-485b-b133-b1ddf189b90c"
 var eventSource = 'http://localhost:3000/eventProperties/' + eventResource;  // "dumps/event.ttl" 
 
-document.getElementById('alerts').innerHTML =  ''
-    + '<div class="alert alert-info">'
-    + '  <button type="button" class="close" data-dismiss="alert">&times;</button>'
-    + '  <strong>Loading</strong> '+eventSource+' is being loaded ...'
-    + '</div>';
+alertInfo(eventSource);
 
  eventStore.graph(eventSource, function (graph, error) {
     if (error == null) {
@@ -51,10 +55,15 @@ document.getElementById('alerts').innerHTML =  ''
             $('#main').html(out);
             });
     } else {
-        document.getElementById('alerts').innerHTML =  ''
-        + '<div class="alert alert-danger">'
-        + '  <button type="button" class="close" data-dismiss="alert">&times;</button>'
-        + '  <strong>Error:</strong> '+ error +'.'
-        + '</div>';
+        alertDanger(error);
     };
 }); 
+
+/* autoclose alerts */
+$(document).ready(function () {
+    window.setTimeout(function() {
+        $(".alert-info").fadeTo(1500, 0).slideUp(500, function(){
+            $(this).remove(); 
+        });
+    }, 5000);
+});
