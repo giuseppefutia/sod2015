@@ -3,6 +3,10 @@
     <title>LOD events eXplorer</title>
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="scripts/style.css" rel="stylesheet">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+    <script type='text/javascript' src="scripts/timeline.js"></script>
+    <script type='text/javascript' src="scripts/sparql.js"></script>
 </head>
 <body>
 
@@ -13,6 +17,20 @@
     </header>
 
     <div class="container"> <!-- Add new container to center the visualization -->
+        <div class="outerwrapper">
+
+<div class="timeline">
+	<div class="tooltip">
+		<p></p>
+	</div>
+</div> <!-- timeline -->
+
+<div class="info-box">
+	<div class="panel"></div>
+</div>
+
+</div> <!-- outerwrapper -->
+
         <div id="alerts"></div>
         <div id="main"></div>
         <div id="footer"></div> <!-- Entities not matched by uduvudu -->
