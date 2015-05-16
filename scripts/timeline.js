@@ -1,9 +1,17 @@
 var cal = {};
 var items = [];
+var loading = function () {
+    document.getElementById('alerts').innerHTML +=  ''
+        + '<div class="alert alert-info">'
+        + '  <button type="button" class="close" data-dismiss="alert">&times;</button>'
+        + '  <strong>Loading</strong> timeline, please wait some seconds.'
+        + '</div>';
+};
 
 function createTimeline(json) {
     $.ajax({
         success: function(data) {
+            loading();
 
             /* Helper function to format and parse date from data */
             function getDate(d) {
@@ -19,6 +27,7 @@ function createTimeline(json) {
             /* Populating items with json data */
             for (var i = 0; i < json.length; i++) {
                 items[i] = new Object;
+                items[i].subject = json[i].subject;
                 items[i].dateStart = json[i].dateStart;
                 items[i].dateEnd = json[i].dateEnd;
                 items[i].date1 = getDate(items[i].dateStart);
@@ -28,33 +37,6 @@ function createTimeline(json) {
 
             /* Order items by start date */
             items.sort(function(a,b) { return a.dateStart.localeCompare(b.dateStart) } );
-
-            /*	Insert an .event div for each event with the text we want to show */
-            for (var i = 0; i < items.length; i++) {
-                $(".outerwrapper .info-box .panel").append('<div class="event-' + i + '"></div>');
-            };
-
-            for (var i = 0; i < $('.outerwrapper div[class^="event"]').length; i++) {
-                if (items[i].headline) {
-                    $('.outerwrapper div[class="event-' + i + '"]')
-                        .append('<h2 style="text-align:left; float:left;">' + items[i].headline + '</h2>');
-                }
-                if (items[i].date1 < items[i].date2) {
-                    $('.outerwrapper div[class="event-' + i + '"]')
-                        .append('<h3 style="text-align:right; float:right;">' + items[i].dateStart + ' - ' + items[i].dateEnd + '</h3>');
-                } else {
-                    $('.outerwrapper div[class="event-' + i + '"]')
-                        .append('<h3 style="text-align:right; float:right;">' + items[i].dateStart + '</h3>');
-                }
-            };
-
-            var eventWidth = $('.outerwrapper .info-box').width();
-            var position = 0;
-            var panelWidth = eventWidth * items.length;
-
-            $(".outerwrapper .info-box .panel").css({
-                "width": panelWidth + "px"
-            });
 
             /* Create object with events occurences for heatmap calendar */
             var first = items[0].date1;
@@ -282,7 +264,8 @@ function monthPath(t0) {
                         };
 
                         showLocation();
-                        //TODO insert here a call for uduvudu loader
+                        loadEvent(items[counter].subject); //uduvudu load
+
                         d3.event.preventDefault();
                         return false;
                     })
@@ -317,7 +300,8 @@ function monthPath(t0) {
                         };
 
                         showLocation();
-                        //TODO insert here a call for uduvudu loader
+                        loadEvent(items[counter].subject); //uduvudu load
+
                         d3.event.preventDefault();
                         return false;
                     })
@@ -522,7 +506,7 @@ function monthPath(t0) {
                         counter = i;
 
                         showLocation();
-                        //TODO insert here a call for uduvudu loader
+                        loadEvent(items[counter].subject); //uduvudu load
 
                         $(".outerwrapper .timeline .tooltip").css({
                             "opacity": 0,
@@ -643,6 +627,34 @@ function monthPath(t0) {
                 //TODO call for uduvuduloader
 
             }); /* End of getScript callback function */
+
+            /*	Insert an .event div for each event with the text we want to show */
+            for (var i = 0; i < items.length; i++) {
+                $(".outerwrapper .info-box .panel").append('<div class="event-' + i + '"></div>');
+            };
+
+            for (var i = 0; i < $('.outerwrapper div[class^="event"]').length; i++) {
+                if (items[i].headline) {
+                    $('.outerwrapper div[class="event-' + i + '"]')
+                        .append('<h2 style="text-align:left; float:left;">' + items[i].headline + '</h2>');
+                }
+                if (items[i].date1 < items[i].date2) {
+                    $('.outerwrapper div[class="event-' + i + '"]')
+                        .append('<h3 style="text-align:right; float:right;">' + items[i].dateStart + ' – ' + items[i].dateEnd + '</h3>');
+                } else {
+                    $('.outerwrapper div[class="event-' + i + '"]')
+                        .append('<h3 style="text-align:right; float:right;">' + items[i].dateStart + '</h3>');
+                }
+            };
+
+            var eventWidth = $('.outerwrapper .info-box').width();
+            var position = 0;
+            var panelWidth = eventWidth * items.length;
+
+            $(".outerwrapper .info-box .panel").css({
+                "width": panelWidth + "px"
+            });
+
         }
     });
 
