@@ -2,6 +2,7 @@ html,
 body {
     height: 100%;
     padding-top:35px;
+    position: relative;
 }
 
 header {
