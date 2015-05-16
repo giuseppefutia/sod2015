@@ -1,4 +1,4 @@
-var distanceKm = 100; //hardcoded the distance for calculating near POI
+var distanceKm = 20; //hardcoded the distance for calculating near POI
 var earthCirc = 40075 //in Km
 
 var calculateLimitCoords = function (lat, long) {
