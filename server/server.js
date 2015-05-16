@@ -13,10 +13,12 @@ app.get('/eventProperties/:uri', function (request, response) {
     FP.launchSparqlQuery(request, response, FP.singleEventProperties(request.param("uri")));
 });
 
-app.get('/closerPOI', function (request, response) {
-    FP.launchSparqlQuery(request, response, FP.closerPOI(request.param("lowLat"), request.param("highLat"), request.param("lowLong"), request.param("highLong")));
+app.get('/eventLatLong/:uri', function (request, response) {
+    FP.launchSparqlQuery(request, response, FP.eventLatLong(request.param("uri")));
+});
 
-    console.info(FP.closerPOI(request.param("lowLat"), request.param("highLat"), request.param("lowLong"), request.param("highLong")));
+app.get('/closerPOIs', function (request, response) {
+    FP.launchSparqlQuery(request, response, FP.closerPOIs(request.param("uri"), request.param("lowLat"), request.param("highLat"), request.param("lowLong"), request.param("highLong")));
 });
 
 var server = app.listen(3000, function() {
