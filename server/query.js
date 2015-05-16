@@ -44,9 +44,21 @@ exports.singleEventProperties = function(eventURI) {
         " } ");
 }
 
-exports.closerPOI = function(lowLat, highLat, lowLong, highLong) { //For testing (46.05, 46.07, 11.12, 11.14)  
+exports.eventLatLong = function(eventURI) {
     return encodeURIComponent(prefixes +
-        "CONSTRUCT { ?subject ?property ?object .} " +
+        "CONSTRUCT {<" + eventURI + "> geo:lat ?lat . " +
+        "<" + eventURI + "> geo:long ?long . } " +
+        "FROM <http://sandbox.fusepool.info:8181/ldp/wr-ldpc/Trentino-Events-1/eventi-xml-xml-transformed> " +
+        "WHERE { <" + eventURI + "> schema:location ?location . " +
+        "?location geo:lat ?lat ; " +
+        "geo:long ?long ." +
+        " } ");
+}   
+
+exports.closerPOIs = function(eventURI, lowLat, highLat, lowLong, highLong) { //For testing (46.05, 46.07, 11.12, 11.14)  
+    return encodeURIComponent(prefixes +
+        "CONSTRUCT { ?subject ?property ?object . " +
+        "<" + eventURI + "> <contains> ?subject . }" +
         "FROM <http://sandbox.fusepool.info:8181/ldp/trentino-point-of-interest-ttl> " +
         "WHERE { " +
         "?subject ?property ?object ; " +
@@ -54,11 +66,13 @@ exports.closerPOI = function(lowLat, highLat, lowLong, highLong) { //For testing
         "geo:long ?long . " +
         "FILTER (?lat >= '" + lowLat + "'^^xsd:double && ?lat <= '" + highLat + "'^^xsd:double && ?long >= '" + lowLong + "'^^xsd:double && ?long <= '" + highLong + "'^^xsd:double) " +
         "}");
-}   
+}
 
 exports.launchSparqlQuery = function (request, response, query) {
 
     var result = "";
+
+    console.info(query);
 
     var options = {
         host: host,

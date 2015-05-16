@@ -1,7 +1,7 @@
 var distanceKm = 1; //hardcoded the distance for calculating near POI
 var earthCirc = 40075 //in Km
 
-exports.calculateLimitCoords = function (lat, long) {
+function calculateLimitCoords (lat, long) {
     var POIcoords = new Object;
 
     POIcoords.lowLat = Math.abs((0.009 * distanceKm) - lat);
