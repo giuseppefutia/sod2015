@@ -38,7 +38,7 @@ var calculateLimitCoords = function (lat, long) {
     return POIcoords;
 };
 
-var launchPOIsQuery = function(poiSource){
+var launchPOIsQuery = function(poiSource, eventResource){
     var poiStore = new rdf.LdpStore();
 
     poiStore.graph(poiSource, function (graph, error) {
@@ -77,7 +77,7 @@ var loadEvent = function (eventResource) {
     var latLongStore = new rdf.LdpStore();
     var latLongSource = 'http://localhost:3000/eventLatLong/' + eventResource;
     latLongStore.graph(latLongSource, function (graph, error) {
-        if(error == null) {
+        if (error == null) {
             //console.debug("successfully loaded "+graph.toArray().length+" triples");
             var lat = graph.toArray()[0]["object"]["nominalValue"];
             var long = graph.toArray()[1]["object"]["nominalValue"];
@@ -87,7 +87,7 @@ var loadEvent = function (eventResource) {
                                                         "&highLat=" + proximity.highLat +
                                                         "&lowLong=" + proximity.lowLong + 
                                                         "&highLong=" + proximity.highLong; 
-            launchPOIsQuery(poiSource);
+            launchPOIsQuery(poiSource, eventResource);
 
         } else {
             alertDanger(error);
@@ -97,6 +97,3 @@ var loadEvent = function (eventResource) {
 
 // prepare visualizer templates for uduvudu
 $("#templates").load("/uduvudu/templates.html");
-
-var eventResource = "urn:event:uuid:4f93f7d5-0f31-485b-b133-b1ddf189b90c" //XXX It is only an example
-loadEvent(eventResource);

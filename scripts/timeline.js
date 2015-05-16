@@ -624,7 +624,7 @@ function monthPath(t0) {
 
                 /* Initial call of show position to adjust the timeline on page load */
                 showLocation();
-                //TODO call for uduvuduloader
+                loadEvent(items[counter].subject); //uduvudu load
 
             }); /* End of getScript callback function */
 

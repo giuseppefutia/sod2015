@@ -120,6 +120,10 @@ div.olControlAttribution, div.olControlScaleLine {
     color: #FFF;
 }
 
+#poi2 div[class^='singlePOI-'] {
+    padding: 10px;
+}
+
 /* SVG
 ----------------------------------*/
 
