@@ -48,7 +48,8 @@ div.olControlAttribution, div.olControlScaleLine {
     width: 100%;
     margin: 0 auto;	
     position: relative;
-    padding-bottom:40px;
+    padding-top:20px;
+    padding-bottom:20px;
 }
 
 .outerwrapper .visually-hidden {
@@ -63,35 +64,28 @@ div.olControlAttribution, div.olControlScaleLine {
     height: 260px;
 }
 
+.outerwrapper .timeline-header {
+    position: absolute;
+    left: 150px;
+    width: 990px;
+    height: 140px;
+    z-index: 10;
+}
+
 .outerwrapper .info-box {
     position: relative;
     top: 0px;
-    height: 80px;
+    height: 70px;
     opacity: 1;
-    border-top: 2px solid #999999;
     background: white;
     overflow: hidden;
 }
 
 .outerwrapper div[class^='event'] {
     position: relative;
-    float: left;	
-    padding: 10px 1000px 0px 0px;
-}
-
-.outerwrapper .info-box div[class^='event'] h3 {
-    margin: 0 0 1em 5px;
-    color: #666;
-}
-
-.outerwrapper .info-box div[class^='event'] h4 {
-    margin: 0 0 0 5px;
-    color: #999;
-    font-style: italic;
-}
-
-.outerwrapper .info-box div[class^='event'] p {
-    margin: 0 0 0 5px;
+    float: left;
+    width: 1140px;
+    padding: 10px 10px;
 }
 
 .outerwrapper .tooltip {
@@ -173,3 +167,27 @@ div.olControlAttribution, div.olControlScaleLine {
 .outerwrapper svg .selected {
 	fill: #E85338;
 }
+
+/* Calendar */
+.day {
+  fill: #fff;
+  stroke: #ccc;
+}
+
+.month {
+  fill: none;
+  stroke: #000;
+  stroke-width: 2px;
+}
+
+.RdYlGn .q0-11{fill:rgb(163,255,163)}
+.RdYlGn .q1-11{fill:rgb(146,239,146)}
+.RdYlGn .q2-11{fill:rgb(130,224,130)}
+.RdYlGn .q3-11{fill:rgb(114,208,114)}
+.RdYlGn .q4-11{fill:rgb(97,193,97)}
+.RdYlGn .q5-11{fill:rgb(81,177,81)}
+.RdYlGn .q6-11{fill:rgb(65,162,65)}
+.RdYlGn .q7-11{fill:rgb(48,146,48)}
+.RdYlGn .q8-11{fill:rgb(32,131,32)}
+.RdYlGn .q9-11{fill:rgb(16,115,16)}
+.RdYlGn .q10-11{fill:rgb(0,100,0)}

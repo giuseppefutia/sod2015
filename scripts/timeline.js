@@ -1,7 +1,7 @@
+var cal = {};
+var items = [];
+
 function createTimeline(json) {
-
-    var items = [];
-
     $.ajax({
         success: function(data) {
 
@@ -26,9 +26,8 @@ function createTimeline(json) {
                 items[i].headline = json[i].headline;
             }
 
-            /*  Order items by start date */
+            /* Order items by start date */
             items.sort(function(a,b) { return a.dateStart.localeCompare(b.dateStart) } );
-
 
             /*	Insert an .event div for each event with the text we want to show */
             for (var i = 0; i < items.length; i++) {
@@ -36,55 +35,135 @@ function createTimeline(json) {
             };
 
             for (var i = 0; i < $('.outerwrapper div[class^="event"]').length; i++) {
-
-                if (items[i].date1 < items[i].date2) {
-                    $('.outerwrapper div[class="event-' + i + '"]')
-                        .append('<h3>' + items[i].dateStart + ' - ' + items[i].dateEnd + '</h3>');
-                } else {
-                    $('.outerwrapper div[class="event-' + i + '"]')
-                        .append('<h3>' + items[i].dateStart + '</h3>');
-                }
-
                 if (items[i].headline) {
                     $('.outerwrapper div[class="event-' + i + '"]')
-                        .append('<h4>' + items[i].headline + ' (' + (i + 1) + ' of ' + items.length + ')</h4>');
+                        .append('<h2 style="text-align:left; float:left;">' + items[i].headline + '</h2>');
+                }
+                if (items[i].date1 < items[i].date2) {
+                    $('.outerwrapper div[class="event-' + i + '"]')
+                        .append('<h3 style="text-align:right; float:right;">' + items[i].dateStart + ' - ' + items[i].dateEnd + '</h3>');
                 } else {
                     $('.outerwrapper div[class="event-' + i + '"]')
-                        .append('<h4> (' + (i + 1) + ' of ' + items.length + ')</h4>');
+                        .append('<h3 style="text-align:right; float:right;">' + items[i].dateStart + '</h3>');
                 }
             };
 
             var eventWidth = $('.outerwrapper .info-box').width();
-
             var position = 0;
-
             var panelWidth = eventWidth * items.length;
 
             $(".outerwrapper .info-box .panel").css({
                 "width": panelWidth + "px"
             });
 
+            /* Create object with events occurences for heatmap calendar */
+            var first = items[0].date1;
+            var last = items[json.length-1].date2;
+            while(first < last) {
+                var strDate = first.getFullYear() + '-' + ('0' + (first.getMonth()+1)).slice(-2) + '-' 
+                          + ('0' + first.getDate()).slice(-2);
+                cal[strDate] = 0; //init all day to zero
+                var tempDate = first.setDate(first.getDate() + 1);
+                first = new Date(tempDate);
+            }
+
+            for (var i = 0; i < json.length; i++) {
+                if (items[i].date1 < items[i].date2) {
+                    first = items[i].date1;
+                    last = items[i].date2;
+
+                    while(first < last){
+                        strDate = first.getFullYear() + '-' + ('0' + (first.getMonth()+1)).slice(-2) + '-' 
+                                  + ('0' + first.getDate()).slice(-2);
+                        cal[strDate]++; //push event day
+                        var newDate = first.setDate(first.getDate() + 1);
+                        first = new Date(newDate);
+                    }
+                } else {
+                    cal[items[i].dateStart]++; //push event day
+                }
+            }
+
             /* Load D3 */
             /* All of the D3/svg code is contained within the callback function */
             /* Loading D3 via a html script tag into ie6-8 will to cause a runtime error */
             $.getScript("http://d3js.org/d3.v3.min.js", function() {
+
+/* CALENDAR */
+
+var c_width = 1058,
+    c_height = 121,
+    cellSize = 17;
+
+var day = d3.time.format("%w"),
+    week = d3.time.format("%U"),
+    percent = d3.format(".1%"),
+    format = d3.time.format("%Y-%m-%d");
+
+var color = d3.scale.quantize()
+    .domain([0, 100]) //in one day from 0 to 10 events
+    .range(d3.range(11).map(function(d) { return "q" + d + "-11"; }));
+
+var svg = d3.select("#cal").selectAll("svg")
+    .data(d3.range(2015, 2016))
+    .enter().append("svg")
+    .attr("width", c_width)
+    .attr("height", c_height)
+    .attr("class", "RdYlGn")
+    .append("g")
+    .attr("transform", "translate(" + ((c_width - cellSize * 53) / 2) + "," + (c_height - cellSize * 7 - 1) + ")");
+
+var c_rect = svg.selectAll(".day")
+    .data(function(d) { return d3.time.days(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
+    .enter().append("rect")
+    .attr("class", "day")
+    .attr("width", cellSize)
+    .attr("height", cellSize)
+    .attr("x", function(d) { return week(d) * cellSize; })
+    .attr("y", function(d) { return day(d) * cellSize; })
+    .datum(format);
+
+c_rect.append("title")
+    .text(function(d) { return d + ": " + cal[d] + " eventi"; }); //text seen with rect hover
+
+svg.selectAll(".month")
+    .data(function(d) { return d3.time.months(new Date(d, 0, 1), new Date(d + 1, 0, 1)); })
+    .enter().append("path")
+    .attr("class", "month")
+    .attr("d", monthPath);
+
+c_rect.filter(function(d) { return d in cal; }) //check every years' days
+      .attr("class", function(d) { return "day " + color(cal[d]); }) //here colors the rect
+
+function monthPath(t0) {
+  var t1 = new Date(t0.getFullYear(), t0.getMonth() + 1, 0),
+      d0 = +day(t0), w0 = +week(t0),
+      d1 = +day(t1), w1 = +week(t1);
+  return "M" + (w0 + 1) * cellSize + "," + d0 * cellSize
+      + "H" + w0 * cellSize + "V" + 7 * cellSize
+      + "H" + w1 * cellSize + "V" + (d1 + 1) * cellSize
+      + "H" + (w1 + 1) * cellSize + "V" + 0
+      + "H" + (w0 + 1) * cellSize + "Z";
+}
+
+/* END CALENDAR */
                 var duration = 200;
                 var marginTop = 5;
                 var marginRight = 0;
                 var marginBottom = 40;
                 var marginLeft = 0;
                 var padding = 2;
-                var width = 1150 - marginRight - marginLeft;
+                var width = 1140 - marginRight - marginLeft;
                 var height = 290 - marginTop - marginBottom;
                 var miniHeight = 75;
                 var mainHeight = height - miniHeight - 50;
 
                 var zoom = 1;
-                var maxZoom = 10;
+                var maxZoom = 20;
                 var zoomIncrement = 1;
 
-                /* A global variable to control which event/location to show */
-                var counter = 0;
+                /* A global variable to control which event/location to show first*/
+                var counter = Math.floor((Math.random() * json.length) + 1);
 
                 /* A global variable to control the amout of ticks visible */
                 var ticks = 8;
@@ -97,9 +176,8 @@ function createTimeline(json) {
                     return d.date2;
                 });
 
-                /* Work out the time span of the whole timeline in miliseconds plus one tenth of this value */
+                /* Buffer time in timeline before and after events */
                 var timeDiff = timeLast - timeFirst;
-                timeDiff = timeDiff + (timeDiff * 0.1);
 
                 /* Extend the time range before the first date and after the last date 
 						to make for a more attractive timeline */
@@ -124,13 +202,13 @@ function createTimeline(json) {
                 var zoomInIcon = chart.append("path")
                     .attr("d", "M22.646,19.307c0.96-1.583,1.523-3.435,1.524-5.421C24.169,8.093,19.478,3.401,13.688,3.399C7.897,3.401,3.204,8.093,3.204,13.885c0,5.789,4.693,10.481,10.484,10.481c1.987,0,3.839-0.563,5.422-1.523l7.128,7.127l3.535-3.537L22.646,19.307zM13.688,20.369c-3.582-0.008-6.478-2.904-6.484-6.484c0.006-3.582,2.903-6.478,6.484-6.486c3.579,0.008,6.478,2.904,6.484,6.486C20.165,17.465,17.267,20.361,13.688,20.369zM15.687,9.051h-4v2.833H8.854v4.001h2.833v2.833h4v-2.834h2.832v-3.999h-2.833V9.051z")
                     .style("pointer-events", "none")
-                    .attr("transform", "translate(5,60), scale(1.25)");
+                    .attr("transform", "translate(15,65), scale(1.25)");
 
                 var zoomInButton = chart.append("rect")
                     .attr("width", 50)
                     .attr("height", 50)
                     .style("opacity", 0.2)
-                    .attr("transform", "translate(0,55)")
+                    .attr("transform", "translate(10,60)")
                     .style("cursor", "pointer")
                     .on("click", function(e) {
                         if (zoom < maxZoom) {
@@ -156,13 +234,13 @@ function createTimeline(json) {
                 var zoomOutIcon = chart.append("path")
                     .attr("d", "M22.646,19.307c0.96-1.583,1.523-3.435,1.524-5.421C24.169,8.093,19.478,3.401,13.688,3.399C7.897,3.401,3.204,8.093,3.204,13.885c0,5.789,4.693,10.481,10.484,10.481c1.987,0,3.839-0.563,5.422-1.523l7.128,7.127l3.535-3.537L22.646,19.307zM13.688,20.369c-3.582-0.008-6.478-2.904-6.484-6.484c0.006-3.582,2.903-6.478,6.484-6.486c3.579,0.008,6.478,2.904,6.484,6.486C20.165,17.465,17.267,20.361,13.688,20.369zM8.854,11.884v4.001l9.665-0.001v-3.999L8.854,11.884z")
                     .style("pointer-events", "none")
-                    .attr("transform", "translate(55,60), scale(1.25)");
+                    .attr("transform", "translate(65,65), scale(1.25)");
 
                 var zoomOutButton = chart.append("rect")
                     .attr("width", 50)
                     .attr("height", 50)
                     .style("opacity", 0.2)
-                    .attr("transform", "translate(50,55)")
+                    .attr("transform", "translate(60,60)")
                     .style("cursor", "pointer")
                     .on("click", function(e) {
                         if (zoom > 1) {
@@ -190,13 +268,13 @@ function createTimeline(json) {
                 var leftIcon = chart.append("path")
                     .attr("d", "M20.834,8.037L9.641,14.5c-1.43,0.824-1.43,2.175,0,3l11.193,6.463c1.429,0.826,2.598,0.15,2.598-1.5V9.537C23.432,7.887,22.263,7.211,20.834,8.037z")
                     .style("pointer-events", "none")
-                    .attr("transform", "translate(0,0), scale(1.5)");
+                    .attr("transform", "translate(10,5), scale(1.5)");
 
                 var leftButton = chart.append("rect")
                     .attr("width", 50)
                     .attr("height", 50)
                     .style("opacity", 0.2)
-                    .attr("transform", "translate(0,0)")
+                    .attr("transform", "translate(10,5)")
                     .style("cursor", "pointer")
                     .on("click", function(e) {
                         if (counter > 0) {
@@ -204,6 +282,7 @@ function createTimeline(json) {
                         };
 
                         showLocation();
+                        //TODO insert here a call for uduvudu loader
                         d3.event.preventDefault();
                         return false;
                     })
@@ -224,13 +303,13 @@ function createTimeline(json) {
                 var rightIcon = chart.append("path")
                     .attr("d", "M11.166,23.963L22.359,17.5c1.43-0.824,1.43-2.175,0-3L11.166,8.037c-1.429-0.826-2.598-0.15-2.598,1.5v12.926C8.568,24.113,9.737,24.789,11.166,23.963z")
                     .style("pointer-events", "none")
-                    .attr("transform", "translate(50,0), scale(1.5)");
+                    .attr("transform", "translate(60,5), scale(1.5)");
 
                 var rightButton = chart.append("rect")
                     .attr("width", 50)
                     .attr("height", 50)
                     .style("opacity", 0.2)
-                    .attr("transform", "translate(50,0)")
+                    .attr("transform", "translate(60,5)")
                     .style("cursor", "pointer")
                     .on("click", function(e) {
                         if (counter < (items.length - 1)) {
@@ -238,6 +317,7 @@ function createTimeline(json) {
                         };
 
                         showLocation();
+                        //TODO insert here a call for uduvudu loader
                         d3.event.preventDefault();
                         return false;
                     })
@@ -442,6 +522,7 @@ function createTimeline(json) {
                         counter = i;
 
                         showLocation();
+                        //TODO insert here a call for uduvudu loader
 
                         $(".outerwrapper .timeline .tooltip").css({
                             "opacity": 0,
@@ -559,6 +640,7 @@ function createTimeline(json) {
 
                 /* Initial call of show position to adjust the timeline on page load */
                 showLocation();
+                //TODO call for uduvuduloader
 
             }); /* End of getScript callback function */
         }
