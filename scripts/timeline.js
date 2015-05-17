@@ -1,17 +1,10 @@
 var cal = {};
 var items = [];
-var loading = function () {
-    document.getElementById('alerts').innerHTML +=  ''
-        + '<div class="alert alert-info">'
-        + '  <button type="button" class="close" data-dismiss="alert">&times;</button>'
-        + '  <strong>Loading</strong> timeline, please wait some seconds.'
-        + '</div>';
-};
 
 function createTimeline(json) {
     $.ajax({
         success: function(data) {
-            loading();
+            alertInfo("timeline, please wait some seconds");
 
             /* Helper function to format and parse date from data */
             function getDate(d) {
