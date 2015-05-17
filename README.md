@@ -3,9 +3,9 @@
 This project has started during the LOD hackathon organized in Bologna (March 28, 2015) #SOD2015 in the context of the Fusepool P3 project. Authors: @alemela and @giuseppefutia.
 
 To run the project you need to
-* Install nodejs (we have tested our tool with v0.12.0);
-* Go to the '''server''' directory and run '''node server.js''';
-* Open a browser at http://localhost:3000.
+* Install NodeJS (we have tested our tool with v0.12.0);
+* Go to the ```server``` directory and run ```node server.js''';
+* Open a browser at ```http://localhost:3000```.
 
 ## Description
 
