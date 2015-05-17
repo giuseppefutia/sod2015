@@ -31,18 +31,22 @@ exports.allEvents = function() {
 exports.singleEventProperties = function(eventURI) {
     return encodeURIComponent(prefixes +
         "CONSTRUCT {<" + eventURI + "> ?eventProperty ?eventValue ." +
+        "<" + eventURI + "> <contains> ?skosValue . " +
+        "?skosValue skos:related ?skosValue . " +
+        "?skosValue skos:related ?skosValue . " +
         "?location ?locationProperty ?locationValue . " + 
         "?organizer ?organizerProperty ?organizerValue . " +
         "?address ?addressProperty ?addressValue. } " +
         "FROM <http://sandbox.fusepool.info:8181/ldp/wr-ldpc/Trentino-Events-1/eventi-xml-xml-transformed> " +
         "WHERE { <" + eventURI + "> ?eventProperty ?eventValue ; " +
+        "skos:related ?skosValue ;" +
         "schema:location ?location ; " +
         "schema:organizer ?organizer . " +
         "?location ?locationProperty ?locationValue . " +
         "?location schema:address ?address . " +
         "?address ?addressProperty ?addressValue . " +
         "?organizer ?organizerProperty ?organizerValue . " +
-        " } LIMIT 200");
+        " } LIMIT 300");
 }
 
 exports.eventLatLong = function(eventURI) {
