@@ -42,7 +42,7 @@ exports.singleEventProperties = function(eventURI) {
         "?location schema:address ?address . " +
         "?address ?addressProperty ?addressValue . " +
         "?organizer ?organizerProperty ?organizerValue . " +
-        " } ");
+        " } LIMIT 200");
 }
 
 exports.eventLatLong = function(eventURI) {
@@ -72,7 +72,7 @@ exports.closerPOIs = function(eventURI, lowLat, highLat, lowLong, highLong) { //
                 "SELECT DISTINCT ?homepage { " +
                 "?subject foaf:homepage ?homepage . " +
                 "} " +
-            "LIMIT 20 " + 
+            "LIMIT 15 " + 
             "} " +
         "}");
 }
@@ -81,7 +81,7 @@ exports.launchSparqlQuery = function (request, response, query) {
 
     var result = "";
 
-    console.info(query);
+    console.info(decodeURIComponent(query));
 
     var options = {
         host: host,
