@@ -62,14 +62,14 @@ div.olControlAttribution, div.olControlScaleLine {
 }
 
 .outerwrapper .timeline {
-    height: 260px;
+    /*height: 260px;*/
 }
 
 .outerwrapper .timeline-header {
     position: absolute;
     left: 150px;
     width: 990px;
-    height: 140px;
+    /*height: 140px;*/
     z-index: 10;
 }
 

@@ -1,14 +1,16 @@
 var launchPOIsQuery = function(poiSource, eventResource){
     var poiStore = new rdf.LdpStore();
 
+    alertInfo(poiSource);
     poiStore.graph(poiSource, function (graph, error) {
         if (error == null) {
             //console.debug("successfully loaded "+graph.toArray().length+" triples");
             //console.info(graph.toArray())
             // resource (entry for template search) is same as source in this example
             uduvudu.process(graph, {'resource': eventResource} , function (out) {
-            // write the result of the processing in the main div
-            $('#poi').html(out);
+                // write the result of the processing in the main div
+                $('#poi').html(out);
+                closeAlert(".uduvudualert");
             });
         } else {
             alertDanger(error);
@@ -20,6 +22,7 @@ var loadEvent = function (eventResource) {
     var eventStore = new rdf.LdpStore();
     var eventSource = 'http://localhost:3000/eventProperties/' + eventResource;
     $("#poi2").html("") //XXX Clean POI results when you load a new event
+
     alertInfo(eventSource);
     eventStore.graph(eventSource, function (graph, error) {
         if (error == null) {
@@ -28,6 +31,7 @@ var loadEvent = function (eventResource) {
             uduvudu.process(graph, {'resource': eventResource} , function (out) {
                 // write the result of the processing in the main div
                 $('#main').html(out);
+                closeAlert(".uduvudualert");
             });
         } else {
             alertDanger(error);

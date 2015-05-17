@@ -2,6 +2,7 @@ var cal = {};
 var items = [];
 
 function createTimeline(json) {
+    var firstTime = 1;
     $.ajax({
         success: function(data) {
             /* Helper function to format and parse date from data */
@@ -610,7 +611,23 @@ function monthPath(t0) {
                                 }
                             }
                         });
-                    closeAlert(".timealert");
+                    if (firstTime) {
+                        closeAlert(".timealert");
+                        for (var i = 0; i < $('.outerwrapper div[class^="event"]').length; i++) {
+                            if (items[i].headline) {
+                                $('.outerwrapper div[class="event-' + i + '"]')
+                                .append('<h2 style="text-align:left; float:left;">' + items[i].headline + '</h2>');
+                            }
+                            if (items[i].date1 < items[i].date2) {
+                                $('.outerwrapper div[class="event-' + i + '"]')
+                                .append('<h3 style="text-align:right; float:right;">' + items[i].dateStart + ' – ' + items[i].dateEnd + '</h3>');
+                            } else {
+                                $('.outerwrapper div[class="event-' + i + '"]')
+                                .append('<h3 style="text-align:right; float:right;">' + items[i].dateStart + '</h3>');
+                            }
+                        };
+                        firstTime = 0;
+                    }
                 }
 
                 /* Initial call of show position to adjust the timeline on page load */
@@ -619,23 +636,9 @@ function monthPath(t0) {
 
             }); /* End of getScript callback function */
 
-            /*	Insert an .event div for each event with the text we want to show */
+            /* Insert an .event div for each event with the text we want to show */
             for (var i = 0; i < items.length; i++) {
                 $(".outerwrapper .info-box .panel").append('<div class="event-' + i + '"></div>');
-            };
-
-            for (var i = 0; i < $('.outerwrapper div[class^="event"]').length; i++) {
-                if (items[i].headline) {
-                    $('.outerwrapper div[class="event-' + i + '"]')
-                        .append('<h2 style="text-align:left; float:left;">' + items[i].headline + '</h2>');
-                }
-                if (items[i].date1 < items[i].date2) {
-                    $('.outerwrapper div[class="event-' + i + '"]')
-                        .append('<h3 style="text-align:right; float:right;">' + items[i].dateStart + ' – ' + items[i].dateEnd + '</h3>');
-                } else {
-                    $('.outerwrapper div[class="event-' + i + '"]')
-                        .append('<h3 style="text-align:right; float:right;">' + items[i].dateStart + '</h3>');
-                }
             };
 
             var eventWidth = $('.outerwrapper .info-box').width();
