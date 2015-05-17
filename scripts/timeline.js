@@ -31,13 +31,16 @@ function createTimeline(json) {
             items.sort(function(a,b) { return a.dateStart.localeCompare(b.dateStart) } );
 
             /* Create object with events occurences for heatmap calendar */
-            var first = items[0].date1;
-            var last = items[json.length-1].date2;
-            while(first < last) {
-                var strDate = first.getFullYear() + '-' + ('0' + (first.getMonth()+1)).slice(-2) + '-' 
+            var first = new Date("2015-01-01"); //XXX dates hardcoded
+            var last = new Date("2015-12-31");
+            var strDate;
+            var tempDate;
+
+            while(first <= last) {
+                strDate = first.getFullYear() + '-' + ('0' + (first.getMonth()+1)).slice(-2) + '-' 
                           + ('0' + first.getDate()).slice(-2);
                 cal[strDate] = 0; //init all day to zero
-                var tempDate = first.setDate(first.getDate() + 1);
+                tempDate = first.setDate(first.getDate() + 1);
                 first = new Date(tempDate);
             }
 
@@ -46,7 +49,7 @@ function createTimeline(json) {
                     first = items[i].date1;
                     last = items[i].date2;
 
-                    while(first < last){
+                    while(first <= last){
                         strDate = first.getFullYear() + '-' + ('0' + (first.getMonth()+1)).slice(-2) + '-' 
                                   + ('0' + first.getDate()).slice(-2);
                         cal[strDate]++; //push event day
@@ -75,7 +78,7 @@ var day = d3.time.format("%w"),
     format = d3.time.format("%Y-%m-%d");
 
 var color = d3.scale.quantize()
-    .domain([0, 100]) //in one day from 0 to 10 events
+    .domain([-7, 80]) //in one day from 0 to 10 events
     .range(d3.range(11).map(function(d) { return "q" + d + "-11"; }));
 
 var svg = d3.select("#cal").selectAll("svg")
@@ -128,8 +131,8 @@ function monthPath(t0) {
                 var marginLeft = 0;
                 var padding = 2;
                 var width = 1140 - marginRight - marginLeft;
-                var height = 290 - marginTop - marginBottom;
-                var miniHeight = 75;
+                var height = 390 - marginTop - marginBottom; //290
+                var miniHeight = 175; //75
                 var mainHeight = height - miniHeight - 50;
 
                 var zoom = 1;
@@ -137,7 +140,7 @@ function monthPath(t0) {
                 var zoomIncrement = 1;
 
                 /* A global variable to control which event/location to show first*/
-                var counter = Math.floor((Math.random() * json.length) + 1);
+                var counter = Math.floor((Math.random() * (json.length-1)) + 1);
 
                 /* A global variable to control the amout of ticks visible */
                 var ticks = 8;
@@ -643,7 +646,7 @@ function monthPath(t0) {
 
             var eventWidth = $('.outerwrapper .info-box').width();
             var position = 0;
-            var panelWidth = eventWidth * items.length;
+            var panelWidth = eventWidth * (items.length+1);
 
             $(".outerwrapper .info-box .panel").css({
                 "width": panelWidth + "px"
