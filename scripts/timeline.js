@@ -1,5 +1,6 @@
 var cal = {};
 var items = [];
+var choosenArray = {};
 
 function createTimeline(json) {
     var firstTime = 1;
@@ -7,13 +8,7 @@ function createTimeline(json) {
         success: function(data) {
             /* Helper function to format and parse date from data */
             function getDate(d) {
-                if (typeof d === "number") {
-                    return new Date(d);
-                } else if (Date.parse(d)) {
-                    return new Date(d);
-                } else { /* if no day we assume the first of the month */
-                    return new Date("1 " + d);
-                }
+                return new Date(d);
             }
 
             /* Populating items with json data */
@@ -31,17 +26,22 @@ function createTimeline(json) {
             items.sort(function(a,b) { return a.dateStart.localeCompare(b.dateStart) } );
 
             /* Create object with events occurences for heatmap calendar */
-            var first = new Date("2015-01-01"); //XXX dates hardcoded
-            var last = new Date("2015-12-31");
+            var first = items[0].date1;
+            var last = items[json.length-1].date2;
             var strDate;
             var tempDate;
+            var index = 0;
+            var calArray = [];
 
             while(first <= last) {
                 strDate = first.getFullYear() + '-' + ('0' + (first.getMonth()+1)).slice(-2) + '-' 
                           + ('0' + first.getDate()).slice(-2);
                 cal[strDate] = 0; //init all day to zero
+                choosenArray[strDate] = []; //init
+                calArray[index] = strDate; //init
                 tempDate = first.setDate(first.getDate() + 1);
                 first = new Date(tempDate);
+                index++;
             }
 
             for (var i = 0; i < json.length; i++) {
@@ -400,22 +400,46 @@ function monthPath(t0) {
                     .attr("x", function(d, i) {
                         return x(d.date1);
                     })
-                    .attr("y", function(d, i) {
-                        /* Work out if the first date of the current range overlaps the last date of the previous
-							if so move the current rect down so that there is no overlap*/
-                        var prev = 0;
+                    .attr("y", function(d, i) { //XXX
+                        /* Find the right height (more explanation later) and the day in which it's achived
+                           then take a prenotation for the first y and set occupied for the all duration */
 
-                        if (i > 0) {
-                            prev = i - 1;
-                        }
-
-                        if (i === 0) {
-                            return 0;
-                        } else if (items[prev].date2 < items[i].date1) {
-                            return 0;
+                        var choosenDate;
+                        var yIndex;
+                        var maxEvents = -1;
+                        if (d.dateStart != d.dateEnd) {
+                            i = d.date1;
+                            while(i <= d.date2) {
+                                strDate = i.getFullYear() + '-' + ('0' + (i.getMonth()+1)).slice(-2) + '-' 
+                                          + ('0' + i.getDate()).slice(-2);
+                                if (cal[strDate] > maxEvents) {
+                                    maxEvents = cal[strDate];
+                                    choosenDate = strDate;
+                                }
+                                var newDate = i.setDate(i.getDate() + 1);
+                                i = new Date(newDate);
+                            }
                         } else {
-                            return (miniHeight - 10) / 2;
+                            maxEvents = cal[d.dateStart];
                         }
+
+                        if (d.dateStart != d.dateEnd) {
+                            i = d.date1;
+                            yIndex = choosenArray[choosenDate].filter(function(value) { return value !== undefined }).length;
+                            while(i <= d.date2) {
+                                strDate = i.getFullYear() + '-' + ('0' + (i.getMonth()+1)).slice(-2) + '-' 
+                                          + ('0' + i.getDate()).slice(-2);
+                                choosenArray[strDate][yIndex] = d;
+                                var newDate = i.setDate(i.getDate() + 1);
+                                i = new Date(newDate);
+                            }
+                        } else {
+                            yIndex = choosenArray[d.dateStart].filter(function(value) { return value !== undefined }).length;
+                            choosenArray[d.dateStart][yIndex] = d;
+                        }
+
+                        return yIndex * (miniHeight - 10) / maxEvents;
+
                     })
                     .attr("width", function(d) {
                         if (d.date1 < d.date2) {
@@ -433,33 +457,25 @@ function monthPath(t0) {
                             }
                         }
                     })
-                    .attr("height", function(d, i) { //XXX needs better workaround
-                        /* Work out if the first date of the current range overlaps the last date of the previous
-								if so half the height of the block to accomadate */
-                        var prev = 0;
-                        var next;
+                    .attr("height", function(d, i) { 
+                        /* The height of each blocks is the max that satisfy the day with the highest n° of events */
 
-                        if (i > 0) {
-                            prev = i - 1;
-                        }
-
-                        if (i < items.length - 1) {
-                            next = i + 1
-                        } else {
-                            next = items.length - 1;
-                        }
-
-                        if (prev > 0) {
-                            if (items[i].date2 > items[next].date1) {
-                                return (miniHeight - 10) / 2;
-                            } else if (items[prev].date2 > items[i].date1) {
-                                return (miniHeight - 10) / 2;
-                            } else {
-                                return (miniHeight - 10);
+                        var maxEvents = -1;
+                        if (d.dateStart != d.dateEnd) {
+                            i = d.date1;
+                            while(i <= d.date2) {
+                                strDate = i.getFullYear() + '-' + ('0' + (i.getMonth()+1)).slice(-2) + '-' 
+                                          + ('0' + i.getDate()).slice(-2);
+                                if (cal[strDate] > maxEvents) {
+                                    maxEvents = cal[strDate];
+                                }
+                                var newDate = i.setDate(i.getDate() + 1);
+                                i = new Date(newDate);
                             }
                         } else {
-                            return (miniHeight - 10);
+                            maxEvents = cal[d.dateStart];
                         }
+                        return (miniHeight - 10) / maxEvents;
 
                     })
                     .on("mouseover", function(d, i) {
