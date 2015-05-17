@@ -4,7 +4,7 @@ This project has started during the LOD hackathon organized in Bologna (March 28
 
 To run the project you need to
 * Install NodeJS (we have tested our tool with v0.12.0);
-* Go to the ```server``` directory and run ```node server.js''';
+* Go to the ```server``` directory and run ```node server.js```;
 * Open a browser at ```http://localhost:3000```.
 
 ## Description
@@ -22,7 +22,7 @@ We have created a specific template to show all data related to a specific event
 
 We have also created a carousel to show the image retrieve from Wikipedia reading information in the skos:related properties.
 
-[TO DO SCREENSHOT IMAGE]
+<img src="images.png" align="right" alt="Event images" />
 
 In our visualization we are also able to show points of interest close to the choosen event (currently in the radius of 20 km).
 
