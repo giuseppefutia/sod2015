@@ -17,10 +17,10 @@
           </div>
           <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
-              <li><a href="#time">Timeline</a></li>
-              <li><a href="#infobox">Infobox</a></li>
-              <li><a href="#map-canvas">Map</a></li>
-              <li><a href="#poi">Point of Interest</a></li>
+              <li><a href="#time">Timeline & Calendar</a></li>
+              <li><a href="#infobox">Event details</a></li>
+              <li><a href="#carousel">Event images (skos:related)</a></li>
+              <li><a href="#poi">Points of interest</a></li>
             </ul>
             <p class="navbar-text pull-right">
               <a href="https://github.com/giuseppefutia/sod2015" class="navbar-link">GitHub</a>
@@ -31,11 +31,12 @@
 
     <header class="masthead" id="home">
         <h1 class="text-center">LOD events eXplorer</h1>
-        <p class="lead text-center">- Event visualizer for LOD dataset -</p>
-        <p class="text-center">The aim of this framework is to consume/render roughly the amount of triples which can be presented on one page or one screen. [TO BE IMPROVED]</p>
+        
     </header>
 
     <div class="container">
+      <p>A simple explorer of Trentino's events. The project started during the <a href="http://www.spaghettiopendata.org/page/benvenut-sod15">2015 edition of Spaghetti Open Data meeting</a> in the context of the <a href="http://p3.fusepool.eu/">Fusepool P3 European project</a>. To retrieve information related to a specific event, you can click on the calendar and/or on the timeline below. This visualization is powered by <a href="https://github.com/uduvudu/uduvudu">Uduvudu</a>, an extensible and adaptive RDF User Interface engine.<p>
+
         <div id="time"></div>
         <div class="outerwrapper">
             <div class="timeline">

@@ -1,7 +1,7 @@
 var launchPOIsQuery = function(poiSource, eventResource){
     var poiStore = new rdf.LdpStore();
 
-    alertInfo(poiSource);
+    alertInfo("points of interest...");
     poiStore.graph(poiSource, function (graph, error) {
         if (error == null) {
             //console.debug("successfully loaded "+graph.toArray().length+" triples");
@@ -23,7 +23,7 @@ var loadEvent = function (eventResource) {
     var eventSource = 'http://localhost:3000/eventProperties/' + eventResource;
     $("#poi2").html("") //XXX Clean POI results when you load a new event
 
-    alertInfo(eventSource);
+    alertInfo("event details...");
     eventStore.graph(eventSource, function (graph, error) {
         if (error == null) {
             //console.debug("successfully loaded "+graph.toArray().length+" triples");
