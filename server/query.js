@@ -72,9 +72,9 @@ exports.closerPOIs = function(eventURI, lowLat, highLat, lowLong, highLong) { //
                 "SELECT DISTINCT ?homepage { " +
                 "?subject foaf:homepage ?homepage . " +
                 "} " +
-            "LIMIT 20 " + 
+            "LIMIT 15 " + 
             "} " +
-        "} LIMIT 2000");
+        "}");
 }
 
 exports.launchSparqlQuery = function (request, response, query) {
