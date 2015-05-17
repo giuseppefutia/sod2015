@@ -24,6 +24,7 @@ SPARQL.createQuery = function (endpoint, query) {
 
 SPARQL.launchEventsQuery = function (query) {
   //console.log("Launch events query");
+        timeAlertInfo("timeline, please wait some seconds");
 	$.ajax({
   		url: query,
       type: "GET", 

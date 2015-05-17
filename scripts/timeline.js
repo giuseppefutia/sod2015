@@ -4,8 +4,6 @@ var items = [];
 function createTimeline(json) {
     $.ajax({
         success: function(data) {
-            alertInfo("timeline, please wait some seconds");
-
             /* Helper function to format and parse date from data */
             function getDate(d) {
                 if (typeof d === "number") {
@@ -612,7 +610,7 @@ function monthPath(t0) {
                                 }
                             }
                         });
-
+                    closeAlert(".timealert");
                 }
 
                 /* Initial call of show position to adjust the timeline on page load */

@@ -7,9 +7,17 @@ $('a').click(function(){
 });
 
 /* info and error alerts */
+var timeAlertInfo = function (source) {
+    document.getElementById('time').innerHTML +=  ''
+        + '<div class="alert alert-info timealert">'
+        + '  <button type="button" class="close" data-dismiss="alert">&times;</button>'
+        + '  <strong>Loading</strong> '+source
+        + '</div>';
+};
+
 var alertInfo = function (source) {
     document.getElementById('alerts').innerHTML +=  ''
-        + '<div class="alert alert-info">'
+        + '<div class="alert alert-info uduvudualert">'
         + '  <button type="button" class="close" data-dismiss="alert">&times;</button>'
         + '  <strong>Loading</strong> '+source
         + '</div>';
@@ -24,14 +32,13 @@ var alertDanger = function (error) {
 };
 
 /* autoclose alerts */
-$(document).ready(function () {
-    console.log( "ready!" );
+var closeAlert = function (c) {
     window.setTimeout(function() {
-        $(".alert").fadeTo(1500, 0).slideUp(500, function(){
+        $(c).fadeTo(1500, 0).slideUp(500, function(){
             $(this).remove(); 
         });
-    }, 5000);
-});
+    }, 1000);
+};
 
 /* calculate coord range */
 var distanceKm = 20; //hardcoded the distance for calculating near POI
