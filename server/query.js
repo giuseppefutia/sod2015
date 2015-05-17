@@ -8,7 +8,8 @@ var prefixes = "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
         "PREFIX dbo: <http://it.dbpedia.org/ontology> " +
         "PREFIX skos: <http://www.w3.org/2004/02/skos/core#> " +
         "PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> " +
-        "PREFIX dct: <http://purl.org/dc/terms/> ";
+        "PREFIX dct: <http://purl.org/dc/terms/> " +
+        "PREFIX foaf: <http://xmlns.com/foaf/0.1/>";
 
 exports.allEvents = function() {
     return encodeURIComponent(prefixes +
@@ -63,8 +64,16 @@ exports.closerPOIs = function(eventURI, lowLat, highLat, lowLong, highLong) { //
         "WHERE { " +
         "?subject ?property ?object ; " +
         "geo:lat ?lat ; " +
-        "geo:long ?long . " +
+        "geo:long ?long ; " +
+        "foaf:homepage ?homepage ; " +
+        "schema:category ?category . " +
         "FILTER (?lat >= '" + lowLat + "'^^xsd:double && ?lat <= '" + highLat + "'^^xsd:double && ?long >= '" + lowLong + "'^^xsd:double && ?long <= '" + highLong + "'^^xsd:double) " +
+            "{ " + 
+                "SELECT DISTINCT ?homepage { " +
+                "?subject foaf:homepage ?homepage . " +
+                "} " +
+            "LIMIT 20 " + 
+            "} " +
         "}");
 }
 
