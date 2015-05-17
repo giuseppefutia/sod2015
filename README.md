@@ -20,7 +20,7 @@ We have created a specific template to show all data related to a specific event
 <img src="event.png" align="right" alt="Event details" />
 
 
-We have also created a carousel to show the image retrieve from Wikipedia reading information in the skos:related properties.
+We have also created a carousel to show the images retrieve from Wikipedia reading information in the skos:related properties.
 
 <img src="images.png" align="right" alt="Event images" />
 
