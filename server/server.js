@@ -6,7 +6,7 @@ var app = express();
 app.use(express.static('../'));
 
 app.get('/allEvents', function (request, response) {
-    FP.launchSparqlQuery(request, response, FP.allEvents);
+    //FP.launchSparqlQuery(request, response, FP.allEvents);
 });
 
 app.get('/eventProperties/:uri', function (request, response) {
