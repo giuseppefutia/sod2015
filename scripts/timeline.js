@@ -112,6 +112,22 @@ svg.selectAll(".month")
 c_rect.filter(function(d) { return d in cal; }) //check every years' days
       .attr("class", function(d) { return "day " + color(cal[d]); }) //here colors the rect
 
+c_rect.on("mouseover", function(d, i) {
+     d3.select(this).transition()
+                                .duration(200)
+                                .style("opacity", 0.2);
+});
+
+c_rect.on("mouseout", function(d, i) {
+     d3.select(this).transition()
+                                .duration(200)
+                                .style("opacity", 1);
+});
+
+c_rect.on("click", function(d, i) {
+     showDay(calArray[i],calArray[i+1]);
+});
+
 function monthPath(t0) {
   var t1 = new Date(t0.getFullYear(), t0.getMonth() + 1, 0),
       d0 = +day(t0), w0 = +week(t0),
@@ -136,8 +152,8 @@ function monthPath(t0) {
                 var mainHeight = height - miniHeight - 50;
 
                 var zoom = 1;
-                var maxZoom = 20;
-                var zoomIncrement = 1;
+                var maxZoom = 100;
+                var zoomIncrement = 10;
 
                 /* A global variable to control which event/location to show first*/
                 var counter = Math.floor((Math.random() * (json.length-1)) + 1);
@@ -532,7 +548,6 @@ function monthPath(t0) {
 						Adds the relevent content to info-box and provides a new value for xPosition
 						to center the timeline on the selected location*/
                 function showLocation() {
-
                     position = eventWidth * counter;
 
                     $('.outerwrapper .info-box').animate({
@@ -647,6 +662,110 @@ function monthPath(t0) {
                         };
                         firstTime = 0;
                     }
+                }
+
+                function showDay(day1, day2) {
+                    position = eventWidth * counter;
+
+                    $('.outerwrapper .info-box').animate({
+                        scrollLeft: position
+                    }, duration);
+
+                    /*	Recalculate the start and end point of the time range based upon
+							the current location and the zoom level */
+                    zoom = 101;
+                    var mul = 10000000;
+                    timeBegin1 = getDate(day1);
+                    timeEnd1 = getDate(day2);
+                    timeBegin = getDate(timeBegin1.getTime() - mul * zoom);
+                    timeEnd = getDate(timeEnd1.getTime() + mul * zoom);
+
+                    /*	Replace the values used in the x domain */
+                    x.domain([timeBegin, timeEnd]);
+
+
+                    /*	Adjust the ticks for each x axis depening on the time range */
+                    /* ticks for than 5 years, 157,788,000,000 milliseconds */
+                    if ((timeEnd - timeBegin) > 157788000000) {
+                        xMonthAxis.ticks(d3.time.years, 1).tickFormat(function(d) {
+                            return '';
+                        });
+                        xDayAxis.ticks(d3.time.years, 1);
+                    }
+                    /* ticks for than a year, 31,557,600,000 milliseconds */
+                    else if ((timeEnd - timeBegin) > 31557600000) {
+                        xMonthAxis.ticks(d3.time.months, 3).tickFormat(d3.time.format('%d %b'));
+                        xDayAxis.ticks(d3.time.months, 1);
+                    }
+                    /* ticks for than six months 31,557,600,000 milliseconds divided by 2 */
+                    else if ((timeEnd - timeBegin) > 15778800000) {
+                        xMonthAxis.ticks(d3.time.months, 1).tickFormat(d3.time.format('%d %b'));
+                        xDayAxis.ticks(d3.time.weeks, 1);
+                    }
+                    /* ticks for than two months 31,557,600,000 milliseconds divided by 6 */
+                    else if ((timeEnd - timeBegin) > 5259600000) {
+                        xMonthAxis.ticks(d3.time.months, 1).tickFormat(d3.time.format('%d %b'));
+                        xDayAxis.ticks(d3.time.days, 1);
+                    }
+                    /* ticks for than a month 31,557,600,000 milliseconds divided by 12 */
+                    else if ((timeEnd - timeBegin) > 2629800000) {
+                        xMonthAxis.ticks(d3.time.weeks, 1).tickFormat(d3.time.format('%d %b'));
+                        xDayAxis.ticks(d3.time.days, 1);
+                    }
+                    /* ticks for a day */
+                    else {
+                        xMonthAxis.ticks(d3.time.days, 4).tickFormat(d3.time.format('%d %b'));
+                        xDayAxis.ticks(d3.time.days, 1);
+                    }
+
+
+
+                    /*	Redraw each x axis based on the new domain */
+                    yearAxis.transition()
+                        .duration(duration)
+                        .call(xYearAxis);
+
+                    monthAxis.transition()
+                        .duration(duration)
+                        .call(xMonthAxis);
+
+                    dayAxis.transition()
+                        .duration(duration)
+                        .call(xDayAxis);
+
+
+                    /*	Give the selected location the class of 'selected'
+							then animate the locations to their new position based on the updated x scale */
+                    locations.classed("selected", false)
+                        .attr("class", function(d, i) {
+                            if (i === counter) {
+                                return "locations selected";
+                            } else {
+                                return "locations";
+                            };
+                        })
+                        .transition()
+                        .duration(duration)
+                        .attr("x", function(d, i) {
+                            return x(d.date1);
+                        })
+                        .attr("width", function(d) {
+                            if (d.date1 < d.date2) {
+                                /* 	decide the width of the rect based on the range of dates */
+                                return x(d.date2) - x(d.date1);
+                            } else {
+                                /* 	if no end date is specified add 86,400,000 milliseconds to the first
+										date to create a span of time for the width
+										but make sure that it is at least 4 px wide */
+                                var thisWidth = x(getDate(d.date1.getTime() + 86400000)) - x(d.date1);
+
+                                if (thisWidth < 4) {
+                                    return 4;
+                                } else {
+                                    return thisWidth;
+                                }
+                            }
+                        });
                 }
 
                 /* Initial call of show position to adjust the timeline on page load */

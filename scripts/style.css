@@ -36,6 +36,10 @@ header {
     outline:0;
 }
 
+#poi2 div[class^='singlePOI-'] {
+    padding: 10px;
+}
+
 /* OpenLayer OSM attribution fix */
 div.olControlAttribution, div.olControlScaleLine {
     font-family: Verdana;
@@ -92,7 +96,7 @@ div.olControlAttribution, div.olControlScaleLine {
 .outerwrapper .tooltip {
     display:none;
     position: absolute; 
-    top: 110px;
+    top: 10px;
     width: 135px;
     z-index: 999;
     margin-left: -75px;
@@ -125,64 +129,59 @@ div.olControlAttribution, div.olControlScaleLine {
     color: #FFF;
 }
 
-#poi2 div[class^='singlePOI-'] {
-    padding: 10px;
-}
-
-/* SVG
-----------------------------------*/
+/* SVG */
 
 .outerwrapper svg text {
-	font: 13px sans-serif;
+    font: 13px sans-serif;
 }
 
 .outerwrapper svg .axis text, .outerwrapper svg .year-axis text {
-	font: 11px sans-serif;
+    font: 11px sans-serif;
 }
 
 .outerwrapper svg .axis path, .outerwrapper svg .year-axis path {
-	fill: none;
-	stroke: none;
+    fill: none;
+    stroke: none;
 }
 
 .outerwrapper svg .axis line {
-	fill: none;
-	stroke: #999999;
-	shape-rendering: crispEdges;
+    fill: none;
+    stroke: #999999;
+    shape-rendering: crispEdges;
 }
 
 .outerwrapper svg .year-axis line {
-	stroke: none;
+    stroke: none;
 }
 
 .outerwrapper svg .locations {
-	fill: #999999;
-	cursor: pointer;
-	-webkit-transition: all 0.2s ease;                  
-	-moz-transition: all 0.2s ease;                 
-	-o-transition: all 0.2s ease;   
-	-ms-transition: all 0.2s ease;          
-	transition: all 0.2s ease;
+    fill: #0095B6;
+    cursor: pointer;
+    -webkit-transition: all 0.2s ease;                  
+    -moz-transition: all 0.2s ease;                 
+    -o-transition: all 0.2s ease;   
+    -ms-transition: all 0.2s ease;          
+    transition: all 0.2s ease;
 }
 
 .outerwrapper svg .locations:hover {
-	fill: #EE8361;
+    fill: #EE8361;
 }
 
 .outerwrapper svg .selected {
-	fill: #E85338;
+    fill: #E85338;
 }
 
 /* Calendar */
 .day {
-  fill: #fff;
-  stroke: #ccc;
+    fill: #fff;
+    stroke: #ccc;
 }
 
 .month {
-  fill: none;
-  stroke: #000;
-  stroke-width: 2px;
+    fill: none;
+    stroke: #000;
+    stroke-width: 2px;
 }
 
 .RdYlGn .q0-11{fill:rgb(255,255,255)}
