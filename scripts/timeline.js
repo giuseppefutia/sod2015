@@ -115,13 +115,15 @@ c_rect.filter(function(d) { return d in cal; }) //check every years' days
 c_rect.on("mouseover", function(d, i) {
      d3.select(this).transition()
                                 .duration(200)
-                                .style("opacity", 0.2);
+                                .style("opacity", 0.2)
+                                .style("cursor", "pointer");
 });
 
 c_rect.on("mouseout", function(d, i) {
      d3.select(this).transition()
                                 .duration(200)
-                                .style("opacity", 1);
+                                .style("opacity", 1)
+                                .style("cursor", "default");
 });
 
 c_rect.on("click", function(d, i) {
