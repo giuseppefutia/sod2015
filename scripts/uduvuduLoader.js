@@ -46,7 +46,7 @@ var loadEvent = function (eventResource) {
             var lat = graph.toArray()[0]["object"]["nominalValue"];
             var long = graph.toArray()[1]["object"]["nominalValue"];
             var proximity = calculateLimitCoords(lat, long);
-            var poiSource = "http://localhost:3000/closerPOIs?uri=" + eventResource + 
+            var poiSource = "closerPOIs?uri=" + eventResource + 
                                                         "&lowLat=" + proximity.lowLat +
                                                         "&highLat=" + proximity.highLat +
                                                         "&lowLong=" + proximity.lowLong + 
