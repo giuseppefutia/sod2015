@@ -20,7 +20,7 @@ var launchPOIsQuery = function(poiSource, eventResource){
 
 var loadEvent = function (eventResource) {
     var eventStore = new rdf.LdpStore();
-    var eventSource = 'http://localhost:3000/eventProperties/' + eventResource;
+    var eventSource = 'eventProperties/' + eventResource;
     $("#poi2").html("") //XXX Clean POI results when you load a new event
 
     alertInfo("event details...");
@@ -39,7 +39,7 @@ var loadEvent = function (eventResource) {
     });
 
     var latLongStore = new rdf.LdpStore();
-    var latLongSource = 'http://localhost:3000/eventLatLong/' + eventResource;
+    var latLongSource = 'eventLatLong/' + eventResource;
     latLongStore.graph(latLongSource, function (graph, error) {
         if (error == null) {
             //console.debug("successfully loaded "+graph.toArray().length+" triples");
