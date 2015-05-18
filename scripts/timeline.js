@@ -156,7 +156,7 @@ function monthPath(t0) {
                 var zoomIncrement = 10;
 
                 /* A global variable to control which event/location to show first*/
-                var counter = Math.floor((Math.random() * (json.length-1)) + 1);
+                var counter = json.length-2;
 
                 /* A global variable to control the amout of ticks visible */
                 var ticks = 8;
