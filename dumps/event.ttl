@@ -1,0 +1,45 @@
+@prefix :      <http://schema.org/> .
+@prefix schema: <http://schema.org/> .
+@prefix dbo:   <http://it.dbpedia.org/ontology> .
+@prefix urn:   <http://fliqz.com/> .
+@prefix geo:   <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+@prefix owl:   <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix fn:    <http://www.w3.org/2005/xpath-functions#> .
+@prefix skos:  <http://www.w3.org/2004/02/skos/core#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix sesame: <http://www.openrdf.org/schema/sesame#> .
+
+<urn:location:uuid:4f93f7d5-0f31-485b-b133-b1ddf189b90c>
+        a               schema:Place ;
+        rdfs:label      "<p>Di frazione in frazione, nel comune di Valfloriana</p>" ;
+        schema:address  <urn:address:uuid:4f93f7d5-0f31-485b-b133-b1ddf189b90c> ;
+        schema:event    <urn:event:uuid:4f93f7d5-0f31-485b-b133-b1ddf189b90c> ;
+        geo:lat         "46.2506296"^^xsd:double ;
+        geo:long        "11.3442407"^^xsd:double .
+
+<urn:organization:uuid:4f93f7d5-0f31-485b-b133-b1ddf189b90c>
+        a                 schema:Organization ;
+        rdfs:label        "ApT Valle di Fiemme" ;
+        schema:email      "info@visitfiemme.it" ;
+        schema:name       "ApT Valle di Fiemme" ;
+        schema:telephone  "+39 (0462) 241111" .
+
+<urn:event:uuid:4f93f7d5-0f31-485b-b133-b1ddf189b90c>
+        a                   schema:Event ;
+        rdfs:comment        "Nel Comune di Valfloriana si ripete anno dopo anno, da tempi ormai lontani, il tradizionale Carnevale dei Matoci.Un lungo corteo di personaggi con maschere lignee e costumi sgargianti scende di villaggio in villaggio per incontrarsi sulla piazza principale di Casatta. Per raggiungere la meta, i &quot;matoci&quot; devono superare una serie di ostacoli e impegnarsi in scanzonati &quot;botta e risposta&quot; satirici, un sistema che richiama l'antico sistema di dazi e pedaggi da pagare per passare da un paese all'altro. Giunti a Casatta i &quot;matoci&quot; vengono accolti dalle maschere guidate dagli &quot;arlecchini&quot; che danno il via alla festa con balli, scherzi, dolci e vin brul&egrave;. Ballo alla sera."@it , "The Matoci Carnival is a very traditional event. A long procession of characters with wooden masks, garish costumes walks from village to village to meet in the main square of Casatta. To reach the destination they have to pass many 'obstacle' and answer some difficult and satirical questions.  This is the only way to pass from one village to the other, as in the past it was common to pay a toll to walk freely.In Casatta the Carnival ends with dances, tricks, sweets an wine. &nbsp;"@en ;
+        rdfs:label          "Matoci Carnival"@en , "Il Carnevale dei Matoci"@it ;
+        schema:category     "Folklore Local entertainment"@en , "Folklore Intrattenimento della Località"@it ;
+        schema:description  "<p>One of the oldest Carnival in the Alps</p>"@en , "<p>Uno dei pi&ugrave; antichi Carnevali delle Alpi</p>"@it ;
+        schema:endDate      "2015-02-14"^^xsd:date ;
+        schema:location     <urn:location:uuid:4f93f7d5-0f31-485b-b133-b1ddf189b90c> ;
+        schema:organizer    <urn:organization:uuid:4f93f7d5-0f31-485b-b133-b1ddf189b90c> ;
+        schema:startDate    "2015-02-14"^^xsd:date ;
+        skos:related        <http://it.wikipedia.org/wiki/Valfloriana> , <http://it.wikipedia.org/wiki/Dogana> , <http://it.wikipedia.org/wiki/Maschera> , <http://it.wikipedia.org/wiki/Comune> , <http://it.wikipedia.org/wiki/Carnevale> , <http://it.wikipedia.org/wiki/Satira> , <http://it.wikipedia.org/wiki/Arlecchino> .
+
+<urn:address:uuid:4f93f7d5-0f31-485b-b133-b1ddf189b90c>
+        a                       schema:PostalAddress ;
+        schema:addressLocality  "Valfloriana" ;
+        schema:postalCode       "38040" ;
+        schema:streetAddress    "valfloriana" .
