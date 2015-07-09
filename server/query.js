@@ -1,6 +1,6 @@
 var http = require('http');
 
-var host = "sandbox.fusepool.info";
+var host = "data.fusepool.info";
 
 var prefixes = "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
         "PREFIX schema: <http://schema.org/> " +
@@ -17,7 +17,7 @@ exports.allEvents = function() {
         "?subject schema:startDate ?dateStart . " +
         "?subject schema:endDate ?dateEnd . " +
         "} " +
-        "FROM <http://sandbox.fusepool.info:8181/ldp/wr-ldpc/Trentino-Events-1/eventi-xml-xml-transformed> " +
+        "FROM <http://data.fusepool.info:8181/ldp/wr-ldpc/Trentino-Events-1/eventi-xml-xml-transformed> " +
         "WHERE { " +
         "?subject a schema:Event ; " +
         "schema:description ?title ; " +
@@ -37,7 +37,7 @@ exports.singleEventProperties = function(eventURI) {
         "?location ?locationProperty ?locationValue . " + 
         "?organizer ?organizerProperty ?organizerValue . " +
         "?address ?addressProperty ?addressValue. } " +
-        "FROM <http://sandbox.fusepool.info:8181/ldp/wr-ldpc/Trentino-Events-1/eventi-xml-xml-transformed> " +
+        "FROM <http://data.fusepool.info:8181/ldp/wr-ldpc/Trentino-Events-1/eventi-xml-xml-transformed> " +
         "WHERE { <" + eventURI + "> ?eventProperty ?eventValue ; " +
         "skos:related ?skosValue ;" +
         "schema:location ?location ; " +
@@ -53,7 +53,7 @@ exports.eventLatLong = function(eventURI) {
     return encodeURIComponent(prefixes +
         "CONSTRUCT {<" + eventURI + "> geo:lat ?lat . " +
         "<" + eventURI + "> geo:long ?long . } " +
-        "FROM <http://sandbox.fusepool.info:8181/ldp/wr-ldpc/Trentino-Events-1/eventi-xml-xml-transformed> " +
+        "FROM <http://data.fusepool.info:8181/ldp/wr-ldpc/Trentino-Events-1/eventi-xml-xml-transformed> " +
         "WHERE { <" + eventURI + "> schema:location ?location . " +
         "?location geo:lat ?lat ; " +
         "geo:long ?long ." +
@@ -64,7 +64,7 @@ exports.closerPOIs = function(eventURI, lowLat, highLat, lowLong, highLong) { //
     return encodeURIComponent(prefixes +
         "CONSTRUCT { ?subject ?property ?object . " +
         "<" + eventURI + "> <contains> ?subject . }" +
-        "FROM <http://sandbox.fusepool.info:8181/ldp/trentino-point-of-interest-ttl> " +
+        "FROM <http://data.fusepool.info:8181/ldp/trentino-point-of-interest-ttl> " +
         "WHERE { " +
         "?subject ?property ?object ; " +
         "geo:lat ?lat ; " +
