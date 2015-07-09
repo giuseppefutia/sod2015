@@ -12,7 +12,7 @@ To run the project you need to
 Since this repository contains submodules, to clone this you have to
 run the following command:
 
-    git clone --recursive https://github.com/nexacenter/public-contracts.git
+    git clone --recursive https://github.com/giuseppefutia/sod2015.git
 
 Otherwise, if you have already cloned, you can fetch the submodules using
 the following command:
