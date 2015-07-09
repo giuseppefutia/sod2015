@@ -7,6 +7,18 @@ To run the project you need to
 * Go to the ```server``` directory and run ```node server.js```;
 * Open a browser at ```http://localhost:3000```.
 
+## How to clone this repository
+
+Since this repository contains submodules, to clone this you have to
+run the following command:
+
+    git clone --recursive https://github.com/nexacenter/public-contracts.git
+
+Otherwise, if you have already cloned, you can fetch the submodules using
+the following command:
+
+    git submodule update --init
+
 ## Description
 
 In this project we have created an interactive visualization to represent Trentino's events data made available during the #SOD 2015 hackathon. We show all events using a calendar and a timeline to explore data starting from a specific period of time.
