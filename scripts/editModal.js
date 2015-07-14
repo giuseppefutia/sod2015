@@ -1,22 +1,8 @@
 var editModal = {};
 editModal.div = null;
 editModal.modal_id = 'edit-modal';
-editModal.inputTemplate = '<div class="form-group"></div>';
-editModal.updater = {
-	"subject" : "",
-	"predicates": {
-		"asdasd" : {
-			"object": "",
-			"oldObject": "",
-		},
-		"asdasd" : {
-			"object": "",
-			"oldObject": ""
-		}
-	},
-	"author" : "Jon Doe",
-	"time" : "",
-}
+editModal.labelTemplate = '<label></label>'
+editModal.inputWrapperTemplate = '<div class="form-group"></div>';
 
 editModal.open = function(div_class) {
 	self.div = $('.'+div_class);
@@ -52,8 +38,8 @@ editModal.bindSaveButton = function() {
 			type: 'get',
 			data: {updater: updater},
 		})
-		.done(function() {
-			alert('success');
+		.always(function() {
+			$('#'+editModal.modal_id).modal('hide');
 		});
 	});
 }
@@ -72,18 +58,32 @@ editModal.addInputsToForm = function() {
 	var $elems = self.div.find('[data-name]');
 	$.each($elems, function(key, elem){
 		var $jqElem = $(elem);
-		var $input = editModal.getInput($jqElem.attr('data-type'), $jqElem.attr('data-name'), $jqElem.attr('data-value'));
-		$('#'+editModal.modal_id+' form.updater').append(editModal.attachInputToTemplate($input));
+		var $input = editModal.getInput($jqElem.attr('data-type'), $jqElem.attr('data-name'), $jqElem.attr('data-value'), $jqElem.attr('data-misc'));
+		var $label = undefined;
+		if (typeof $jqElem.attr('data-label-text') !== 'undefined') {
+			$label = editModal.getLabel($jqElem.attr('data-label-text'));
+		}
+		$('#'+editModal.modal_id+' form.updater').append(editModal.attachInputToTemplate($input, $label));
 	});
 }
 
-editModal.getInput = function(type, name, value) {
+editModal.getInput = function(type, name, value, misc_data) {
 	switch (type) {
 		case 'text':
 		return editModal.getInputText(name, value);
 		break;
+		case 'select':
+		var json_data = JSON.parse(misc_data);
+		return editModal.getSelect(name, value, json_data);
+		break;
 	}
 	return null;
+}
+
+editModal.getLabel = function(text) {
+	var $label = $(editModal.labelTemplate);
+	$label.html(text);
+	return $label;
 }
 
 editModal.getInputHidden = function(name, value) {
@@ -94,6 +94,22 @@ editModal.getInputText = function(name, value) {
 	return $('<input/>').attr({name: name, type: 'text', value: value, class: 'form-control', 'data-old-value': value});
 }
 
-editModal.attachInputToTemplate = function(input) {
-	return $(editModal.inputTemplate).append(input);
+editModal.getSelect = function(name, value, data) {
+	var $select = $('<select class="form-control"/>').attr({name: name});
+	$.each(data, function(index, val) {
+		 var $option = $('<option value="'+val+'"/>').text(val);
+		 if (value == val) {
+		 	$option.attr('selected', 'selected');
+		 }
+		 $select.prepend($option);
+	});
+	return $select;
+}
+
+editModal.attachInputToTemplate = function(input, label) {
+	var $ret = $(editModal.inputWrapperTemplate).append(input);
+	if (typeof label != 'undefined') {
+		$ret.prepend(label);
+	}
+	return $ret;
 }
