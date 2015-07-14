@@ -13,6 +13,7 @@ var fusepoolPort = "8181";
 //Odino parameter
 var odinoHost = "pentos.polito.it";
 var odinoPath = "/sparql?default-graph-uri=http://explorer.nexacenter.org/master&query=";
+var odinoPathFeed = "/sparql?default-graph-uri=http://explorer.nexacenter.org/feed&query=";
 var odinoPort = "8890";
 
 app.use(express.static('../'));
@@ -49,8 +50,34 @@ app.get('/closerPOIs', function (request, response) {
     			 		FP.closerPOIs(request.param("uri"), request.param("lowLat"), request.param("highLat"), request.param("lowLong"), request.param("highLong")));
 });
 
-app.get('update', function (request, response) {
-	//
+app.get('/update', function (request, response) {
+
+    var updater = {
+        "subject": "urn:uuid:fusepoolp3:business:216",
+        "author": "Name",
+        "time": Date.now(),
+        "predicates": {
+            "http://www.w3.org/2000/01/rdf-schema#label" : {
+                "object": "Maranza new",
+                "oldObject": "Maranza",
+            }
+        }
+    }
+
+    var keys = Object.keys(updater["predicates"]);
+    var predicateSample = keys[0];
+
+    FP.launchSparqlQuery(odinoHost,
+                        odinoPathFeed,
+                        odinoPort,
+                        request,
+                        response,
+                        FP.modify(updater["subject"],
+                                predicateSample,
+                                updater["predicates"][predicateSample]["object"],
+                                updater["author"],
+                                updater["time"],
+                                updater["predicates"][predicateSample]["oldObject"]));
 });
 
 app.get('/test', function (request, response) {

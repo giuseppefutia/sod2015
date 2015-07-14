@@ -81,14 +81,14 @@ exports.closerPOIs = function(eventURI, lowLat, highLat, lowLong, highLong) { //
 
 exports.modify = function (subject, predicate, object, author, timestamp, oldObject) {
     return encodeURIComponent(prefixes +
-        "INSERT INTO <http://explorer.nexacenter.org> " +
+        "INSERT INTO <http://explorer.nexacenter.org/feed> " +
         "{ <http://explorer.nexacenter.org/id/mod" + timestamp + "> rdf:type rdf:Statement. " +
         "<http://explorer.nexacenter.org/id/mod" + timestamp + "> rdf:subject <" + subject + ">. " +
         "<http://explorer.nexacenter.org/id/mod" + timestamp + "> rdf:predicate <" + predicate + ">. " +
-        "<http://explorer.nexacenter.org/id/mod" + timestamp + "> rdf:object <" + object + ">. " +
+        "<http://explorer.nexacenter.org/id/mod" + timestamp + "> rdf:object '" + object + "'. " +
         "<http://explorer.nexacenter.org/id/mod" + timestamp + "> <dc:Author> '" + author + "' . " +
-        "<http://explorer.nexacenter.org/id/mod" + timestamp + "> <createAt> '" + timestamp + "' . " +
-        "<http://explorer.nexacenter.org/id/mod" + timestamp + "> <oldObject> <" + oldObject + "> . " +
+        "<http://explorer.nexacenter.org/id/mod" + timestamp + "> <dc:time> '" + timestamp + "' . " +
+        "<http://explorer.nexacenter.org/id/mod" + timestamp + "> <oldObject> '" + oldObject + "' . " +
         "}");
 }
 
