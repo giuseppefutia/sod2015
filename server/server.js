@@ -52,32 +52,26 @@ app.get('/closerPOIs', function (request, response) {
 
 app.get('/update', function (request, response) {
 
-    var updater = {
-        "subject": "urn:uuid:fusepoolp3:business:216",
-        "author": "Name",
-        "time": Date.now(),
-        "predicates": {
-            "http://www.w3.org/2000/01/rdf-schema#label" : {
-                "object": "Maranza new",
-                "oldObject": "Maranza",
-            }
-        }
-    }
+    var updater = request.query["updater"];
+    var predicates = updater["predicates"];
 
-    var keys = Object.keys(updater["predicates"]);
-    var predicateSample = keys[0];
+    for (var predicate in predicates) {
+        console.log(predicate);
+        console.log(predicates[predicate]["object"]);
+        console.log(updater["subject"]);
 
-    FP.launchSparqlQuery(odinoHost,
+        FP.launchSparqlQuery(odinoHost,
                         odinoPathFeed,
                         odinoPort,
                         request,
                         response,
                         FP.modify(updater["subject"],
-                                predicateSample,
-                                updater["predicates"][predicateSample]["object"],
+                                predicate,
+                                predicates[predicate]["object"],
                                 updater["author"],
                                 updater["time"],
-                                updater["predicates"][predicateSample]["oldObject"]));
+                                predicates[predicate]["oldObject"]));
+    }
 });
 
 app.get('/test', function (request, response) {
