@@ -23,7 +23,7 @@ header {
     width: 100%;
     top:0;
     left:0;
-    z-index:10000;
+    z-index:999;
     height:54px;
     background-color:#f8f8f8;
 }
@@ -195,3 +195,14 @@ div.olControlAttribution, div.olControlScaleLine {
 .RdYlGn .q8-11{fill:rgb(32,131,32)}
 .RdYlGn .q9-11{fill:rgb(16,115,16)}
 .RdYlGn .q10-11{fill:rgb(0,100,0)}
+
+.icon-edit {
+	cursor: pointer;
+	float:right;
+	margin-right:30px;
+	display:none;
+}
+
+#poi2 > div:hover .icon-edit {
+	display:inline;
+}

@@ -1,7 +1,5 @@
 var http = require('http');
 
-var host = "data.fusepool.info";
-
 var prefixes = "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
         "PREFIX schema: <http://schema.org/> " +
         "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> " +
@@ -17,7 +15,7 @@ exports.allEvents = function() {
         "?subject schema:startDate ?dateStart . " +
         "?subject schema:endDate ?dateEnd . " +
         "} " +
-        "FROM <http://data.fusepool.info:8181/ldp/wr-ldpc/Trentino-Events-1/eventi-xml-xml-transformed> " +
+        //"FROM <http://data.fusepool.info:8181/ldp/wr-ldpc/Trentino-Events-1/eventi-xml-xml-transformed> " +
         "WHERE { " +
         "?subject a schema:Event ; " +
         "schema:description ?title ; " +
@@ -81,16 +79,34 @@ exports.closerPOIs = function(eventURI, lowLat, highLat, lowLong, highLong) { //
         "}");
 }
 
-exports.launchSparqlQuery = function (request, response, query) {
+exports.modify = function (subject, predicate, object, author, timestamp, oldObject) {
+    return encodeURIComponent(prefixes +
+        "INSERT INTO <http://explorer.nexacenter.org/feed> " +
+        "{ <http://explorer.nexacenter.org/id/mod" + timestamp + "> rdf:type rdf:Statement. " +
+        "<http://explorer.nexacenter.org/id/mod" + timestamp + "> rdf:subject <" + subject + ">. " +
+        "<http://explorer.nexacenter.org/id/mod" + timestamp + "> rdf:predicate <" + predicate + ">. " +
+        "<http://explorer.nexacenter.org/id/mod" + timestamp + "> rdf:object '" + object + "'. " +
+        "<http://explorer.nexacenter.org/id/mod" + timestamp + "> <dc:Author> '" + author + "' . " +
+        "<http://explorer.nexacenter.org/id/mod" + timestamp + "> <dc:time> '" + timestamp + "' . " +
+        "<http://explorer.nexacenter.org/id/mod" + timestamp + "> <oldObject> '" + oldObject + "' . " +
+        "}");
+}
+
+exports.test = function() {
+    return encodeURIComponent(prefixes + 
+        "CONSTRUCT+{%3Fsubject+%3Fproperty+%3Fobject+.}%0D%0AWHERE+{%3Fsubject+%3Fproperty+%3Fobject+.}+LIMIT+100");
+}
+
+exports.launchSparqlQuery = function (hostName, path, port, request, response, query) {
 
     var result = "";
 
     console.info(decodeURIComponent(query));
 
     var options = {
-        host: host,
-        path: "/sparql/select?query=" + (typeof(query) === "function" ? query() : query), /// XXX
-        port: "8181",
+        host: hostName,
+        path: path + (typeof(query) === "function" ? query() : query), /// XXX
+        port: port,
         method: "GET",
         headers: {
             accept: "text/turtle"
