@@ -24,13 +24,16 @@ editModal.bindSaveButton = function() {
 		updater.author = "John Doe";
 		updater.time = Math.floor(Date.now() / 1000);
 		updater.predicates = {};
-		$.each($('#'+editModal.modal_id+' form.updater input'), function(index, input) {
+		$.each($('#'+editModal.modal_id+' form.updater input'), function (index, input) {
 			 var $jqInput = $(input);
 			 if ($jqInput.attr('name') != 'subject') {
-			 	updater.predicates[$jqInput.attr('name')] = {
-			 		'object' : $jqInput.val(),
-			 		'oldObject' : $jqInput.attr('data-old-value'),
-			 	};
+			 	// Check unchanged values
+			 	if($jqInput.val() != $jqInput.attr('data-old-value')){
+			 		updater.predicates[$jqInput.attr('name')] = {
+			 			'object' : $jqInput.val(),
+			 			'oldObject' : $jqInput.attr('data-old-value'),
+			 		};
+			 	}
 			 }
 		});
 		$.ajax({
