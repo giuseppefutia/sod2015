@@ -51,27 +51,13 @@ app.get('/closerPOIs', function (request, response) {
 });
 
 app.get('/update', function (request, response) {
-
-    var updater = request.query["updater"];
-    var predicates = updater["predicates"];
-
-    for (var predicate in predicates) {
-        console.log(predicate);
-        console.log(predicates[predicate]["object"]);
-        console.log(updater["subject"]);
-
-        FP.launchSparqlQuery(odinoHost,
+    var query = FP.createModifyQuery(request.query["updater"]);
+    FP.launchSparqlQuery(odinoHost,
                         odinoPathFeed,
                         odinoPort,
                         request,
                         response,
-                        FP.modify(updater["subject"],
-                                predicate,
-                                predicates[predicate]["object"],
-                                updater["author"],
-                                updater["time"],
-                                predicates[predicate]["oldObject"]));
-    }
+                        FP.modify(query));
 });
 
 app.get('/test', function (request, response) {
