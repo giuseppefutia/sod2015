@@ -23,17 +23,65 @@ function sparqlGet(theUrl) {
             }
             for ( var i in resArray ) {
                 //console.log(resArray[i]);
-                var newRow = tableRef.insertRow(tableRef.rows.length);
-                var newCell0 = newRow.insertCell(0);
-                var newCell1 = newRow.insertCell(1);
-                var newCell2 = newRow.insertCell(2);
-                var newText0 = resArray[i]['http://www.w3.org/1999/02/22-rdf-syntax-ns#subject'] + "<br>" + resArray[i]['http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate'] + "<br><b>" + resArray[i].oldObject + "</b>";
-                var newText1 = "Proposed by: " + resArray[i]['dc:Author'] + " at: " + new Date(resArray[i]['dc:time']*1000) + "<br>Analyzed by: " + resArray[i]['hasAdmin'] + " at: " + new Date(resArray[i]['checkTime']*1000) + "<br>Status:<i> " + resArray[i]['status'] + "</i>";
-                var newText2 = '<button type="button" class="btn btn-default" onclick="alert()"><span class="glyphicon glyphicon glyphicon-arrow-left" aria-hidden="true"></span></button>';
-                newCell0.innerHTML = newText0;
-                newCell1.innerHTML = newText1;
-                newCell2.innerHTML = newText2;
+                if (resArray[i]['http://www.w3.org/1999/02/22-rdf-syntax-ns#type'] !== "commit") {
+                  var newRow = tableRef.insertRow(tableRef.rows.length);
+                  if (resArray[i]['status'] === "approved") {
+                      newRow.className = "success";
+                  } else if (resArray[i]['status'] === "rejected") {
+                      newRow.className = "danger";
+                  } else if (resArray[i]['status'] === "pending") {
+                      newRow.className = "warning";
+                  }
+                  var newCell0 = newRow.insertCell(0);
+                  var newCell1 = newRow.insertCell(1);
+                  var newCell2 = newRow.insertCell(2);
+                  var newText0 = resArray[i]['http://www.w3.org/1999/02/22-rdf-syntax-ns#subject'] + "<br>" + resArray[i]['http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate'] + "<br><b>" + resArray[i].oldObject + "</b>";
+                  var newText1 = "Proposed by: " + resArray[i]['dc:Author'] + " at: " + new Date(resArray[i]['dc:time']*1000) + "<br>Analyzed by: " + resArray[i]['hasAdmin'] + " at: " + new Date(resArray[i]['checkTime']*1000) + "<br>Status:<i> " + resArray[i]['status'] + "</i>";
+                  var newText2 = '<button type="button" class="btn btn-default" onclick="rollbackTriple(\''+i+'\', \''+ resArray[i]['status']+'\')"><span class="glyphicon glyphicon glyphicon-arrow-left" aria-hidden="true"></span></button>';
+                  newCell0.innerHTML = newText0;
+                  newCell1.innerHTML = newText1;
+                  if (resArray[i]['status'] !== "pending") {
+                      newCell2.innerHTML = newText2;
+                  }
+                }
             }
         }
     });
 }
+
+function rollbackTriple(mod, status) {
+    var n = Math.floor(Date.now() / 1000);
+    var time = mod.replace(/\/\d$/,"").replace("http://explorer.nexacenter.org/id/mod","");
+
+    if (status === "rejected") {
+        var statusPending = "DELETE DATA FROM <http://explorer.nexacenter.org/history> { <"+mod+"> <status> <rejected> } INSERT DATA INTO <http://explorer.nexacenter.org/history> { <"+mod+"> <status> <pending> }";
+        var addToFeed = [""
+        ,"INSERT INTO <http://explorer.nexacenter.org/feed>"
+        ,"{ <"+mod+"> ?p ?o ."
+        ,"  <"+mod+"> <hasAdmin> <Nexaa> ."
+        ,"  <"+mod+"> <checkTime> <"+n+"> ."
+        ,"  <"+mod+"> <status> <rejected> . }"
+        ,"where { <"+mod+"> ?p ?o . }"
+        ,"INSERT INTO <http://explorer.nexacenter.org/feed>"
+        ,"{ <http://explorer.nexacenter.org/id/mod"+time+"> ?p ?o .}"
+        ,"where { <http://explorer.nexacenter.org/id/mod"+time+"> ?p ?o .}"
+        ].join(" ");
+        rollbackToFeed(url+"&query="+ encodeURIComponent(statusPending+addToFeed) +"&format=json");
+    } else if (status === "approved") {
+        rollbackMaster();
+    } else {
+        alert("Status undefined, impossibile to rollback");
+    }
+}
+
+function rollbackToFeed(theUrl) {
+    $.ajax({
+        dataType: "jsonp",  
+        url: theUrl,
+        success: function( _data ) {
+            $("#mainTable").html("");
+            sparqlGet(queryUrl);
+        }
+    });
+}
+
