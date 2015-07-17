@@ -42,9 +42,9 @@ app.get('/eventLatLong/:uri', function (request, response) {
 });
 
 app.get('/closerPOIs', function (request, response) {
-    FP.launchSparqlQuery(fusepoolHost,
-    					fusepoolPath,
-    					fusepoolPort,
+    FP.launchSparqlQuery(odinoHost,
+    					odinoPath,
+    					odinoPort,
     					request,
     			 		response,
     			 		FP.closerPOIs(request.param("uri"), request.param("lowLat"), request.param("highLat"), request.param("lowLong"), request.param("highLong")));
