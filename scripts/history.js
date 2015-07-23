@@ -23,10 +23,10 @@ function sparqlGet(theUrl) {
                 resArray[results[i].a.value][results[i].b.value] = results[i].c.value;
             }
             for (var i in resArray) {
-                console.log(resArray[i]);
+                //console.log(resArray[i]);
                 if (resArray[i]['http://www.w3.org/1999/02/22-rdf-syntax-ns#type'] !== "commit") {
                     var getSubjectLabel = "SELECT ?a WHERE {<" + resArray[i]['http://www.w3.org/1999/02/22-rdf-syntax-ns#subject'] + "> <http://www.w3.org/2000/01/rdf-schema#label> ?a .}"
-                    getLabel(resArray[i], urlMaster + "&query=" + encodeURIComponent(getSubjectLabel) + "&format=json", function(subject, array) {
+                    getLabel(i,resArray[i], urlMaster + "&query=" + encodeURIComponent(getSubjectLabel) + "&format=json", function(subject, array, i) {
                         var tableRef = document.getElementById('mainTable');
                         var newRow = tableRef.insertRow(tableRef.rows.length);
                         if (array['status'] === "approved") {
@@ -65,8 +65,9 @@ function rollbackTriple(mod, status) {
         runUpdate(url + "&query=" + encodeURIComponent(fromRejToPending + addToFeed) + "&format=json");
     } else if (status === "approved") {
         var fromAppToPending = "DELETE DATA FROM <http://explorer.nexacenter.org/history> { <" + mod + "> <status> <approved> } INSERT DATA INTO <http://explorer.nexacenter.org/history> { <" + mod + "> <status> <pending> }";
+        var updateMaster = " INSERT INTO <http://explorer.nexacenter.org/master> { ?s ?p ?o } WHERE { GRAPH  <http://explorer.nexacenter.org/history> { <" + mod + "> <oldObject> ?o . <" + mod + "> <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> ?s . <" + mod + "> <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> ?p . } } DELETE FROM <http://explorer.nexacenter.org/master> { ?s ?p ?o } WHERE { GRAPH  <http://explorer.nexacenter.org/history> { <" + mod + "> <http://www.w3.org/1999/02/22-rdf-syntax-ns#object> ?o . <" + mod + "> <http://www.w3.org/1999/02/22-rdf-syntax-ns#subject> ?s . <" + mod + "> <http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate> ?p . } }";
 
-        runUpdate(url + "&query=" + encodeURIComponent(fromAppToPending + addToFeed) + "&format=json");
+        runUpdate(url + "&query=" + encodeURIComponent(fromAppToPending + addToFeed + updateMaster) + "&format=json");
     } else {
         alert("Status undefined, impossibile to rollback");
     }
@@ -83,12 +84,12 @@ function runUpdate(theUrl) {
     });
 }
 
-function getLabel(array, theUrl, callback) {
+function getLabel(i, array, theUrl, callback) {
     $.ajax({
         dataType: "jsonp",
         url: theUrl,
         success: function(_data) {
-            callback(_data.results.bindings[0].a.value, array);
+            callback(_data.results.bindings[0].a.value, array, i);
         }
     });
 }

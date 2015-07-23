@@ -25,7 +25,7 @@ function sparqlGet(theUrl) {
                 //console.log(resArray[i]);
                 if (resArray[i]['http://www.w3.org/1999/02/22-rdf-syntax-ns#type'] !== "commit") {
                     var getSubjectLabel = "SELECT ?a WHERE {<" + resArray[i]['http://www.w3.org/1999/02/22-rdf-syntax-ns#subject'] + "> <http://www.w3.org/2000/01/rdf-schema#label> ?a .}"
-                    getLabel(resArray[i], urlMaster + "&query=" + encodeURIComponent(getSubjectLabel) + "&format=json", function(subject, array) {
+                    getLabel(i, resArray[i], urlMaster + "&query=" + encodeURIComponent(getSubjectLabel) + "&format=json", function(subject, array, i) {
                         var tableRef = document.getElementById('mainTable');
                         var newRow = tableRef.insertRow(tableRef.rows.length);
                         var newCell0 = newRow.insertCell(0);
@@ -82,12 +82,12 @@ function runUpdate(theUrl) {
     });
 }
 
-function getLabel(array, theUrl, callback) {
+function getLabel(i, array, theUrl, callback) {
     $.ajax({
         dataType: "jsonp",
         url: theUrl,
         success: function(_data) {
-            callback(_data.results.bindings[0].a.value, array);
+            callback(_data.results.bindings[0].a.value, array, i);
         }
     });
 }
