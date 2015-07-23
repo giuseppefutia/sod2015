@@ -36,6 +36,16 @@ editModal.bindSaveButton = function() {
 			 	}
 			 }
 		});
+		$.each($('#'+editModal.modal_id+' form.updater select'), function (index, input) {
+			var updatedValue = $("select option:selected")[0].innerHTML;
+			var $jqInput = $(input);
+			if (updatedValue != $jqInput.attr('data-old-value')) {
+				updater.predicates[$jqInput.attr('name')] = {
+			 			'object' : updatedValue,
+			 			'oldObject' : $jqInput.attr('data-old-value'),
+			 		};
+			}
+		});
 		$.ajax({
 			url: $('#'+editModal.modal_id+' form.updater').attr('action'),
 			type: 'get',
