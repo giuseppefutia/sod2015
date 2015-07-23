@@ -31,14 +31,18 @@ We have created a specific template to show all data related to a specific event
 
 <img src="event.png" align="right" alt="Event details" />
 
-
 We have also created a carousel to show the images retrieve from Wikipedia reading information in the skos:related properties.
 
 <img src="images.png" align="right" alt="Event images" />
 
 In our visualization we are also able to show points of interest close to the choosen event (currently in the radius of 20 km).
 
-<img src="poi.png" align="right" alt="Event POIs" />
+<img src="poi.png" align="right" alt="Event POIs" />  
+
+
+The architecture for our versioning system is the following.
+<img src="https://cloud.githubusercontent.com/assets/9196809/8854191/0b811bd6-315f-11e5-9a34-3e7c8ee407f3.png" align="right" alt="Architecture details">  
+
 
 
 ## How we have faced "Future works"
