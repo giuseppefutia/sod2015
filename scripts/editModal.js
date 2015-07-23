@@ -108,7 +108,7 @@ editModal.getInputText = function(name, value) {
 }
 
 editModal.getSelect = function(name, value, data) {
-	var $select = $('<select class="form-control"/>').attr({name: name});
+	var $select = $('<select class="form-control"/>').attr({name: name, 'data-old-value': value});
 	$.each(data, function(index, val) {
 		 var $option = $('<option value="'+val+'"/>').text(val);
 		 if (value == val) {
