@@ -1,15 +1,13 @@
 var http = require('http');
 
-var host = "data.fusepool.info";
-
-var prefixes = "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> " +
-        "PREFIX schema: <http://schema.org/> " +
-        "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> " +
-        "PREFIX dbo: <http://it.dbpedia.org/ontology> " +
-        "PREFIX skos: <http://www.w3.org/2004/02/skos/core#> " +
-        "PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> " +
-        "PREFIX dct: <http://purl.org/dc/terms/> " +
-        "PREFIX foaf: <http://xmlns.com/foaf/0.1/>";
+var prefixes = "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n" +
+        "PREFIX schema: <http://schema.org/> \n" +
+        "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> \n" +
+        "PREFIX dbo: <http://it.dbpedia.org/ontology> \n" +
+        "PREFIX skos: <http://www.w3.org/2004/02/skos/core#> \n" +
+        "PREFIX geo: <http://www.w3.org/2003/01/geo/wgs84_pos#> \n" +
+        "PREFIX dct: <http://purl.org/dc/terms/> \n" +
+        "PREFIX foaf: <http://xmlns.com/foaf/0.1/> \n";
 
 exports.allEvents = function() {
     return encodeURIComponent(prefixes +
@@ -17,7 +15,7 @@ exports.allEvents = function() {
         "?subject schema:startDate ?dateStart . " +
         "?subject schema:endDate ?dateEnd . " +
         "} " +
-        "FROM <http://data.fusepool.info:8181/ldp/wr-ldpc/Trentino-Events-1/eventi-xml-xml-transformed> " +
+        //"FROM <http://data.fusepool.info:8181/ldp/wr-ldpc/Trentino-Events-1/eventi-xml-xml-transformed> " +
         "WHERE { " +
         "?subject a schema:Event ; " +
         "schema:description ?title ; " +
@@ -81,16 +79,61 @@ exports.closerPOIs = function(eventURI, lowLat, highLat, lowLong, highLong) { //
         "}");
 }
 
-exports.launchSparqlQuery = function (request, response, query) {
+exports.createModifyQuery = function (updater) {
+
+    var subject = updater["subject"];
+    var author = updater["author"];
+    var time = updater["time"];
+    var predicates = updater["predicates"];
+
+    var query = "<http://explorer.nexacenter.org/id/mod" + time + "> rdf:type <commit>. \n"
+    query += "<http://explorer.nexacenter.org/id/mod" + time + "> <dc:time> '" + time + "' . \n";
+    query += "<http://explorer.nexacenter.org/id/mod" + time + "> <dc:Author> '" + author + "' . \n";
+
+    var counter = 0
+    for (var predicate in predicates) {
+        var object = predicates[predicate]["object"];
+        var oldObject = predicates[predicate]["oldObject"];
+
+        var reification = "";
+        var reificationEntity = "<http://explorer.nexacenter.org/id/mod" + time + "/" + counter + ">"
+
+        reification += "<http://explorer.nexacenter.org/id/mod" + time + "> <hasMod> " + reificationEntity +" . \n";
+        reification += reificationEntity + " rdf:type rdf:Statement . \n";
+        reification += reificationEntity + " rdf:subject <" + subject + "> . \n";
+        reification += reificationEntity + " rdf:predicate <" + predicate + "> . \n";
+        reification += reificationEntity + " rdf:object '" + object + "' . \n";
+        reification += reificationEntity + " <dc:Author> '" + author + "' . \n";
+        reification += reificationEntity + " <dc:time> '" + time + "' . \n";
+        reification += reificationEntity + " <oldObject> '" + oldObject + "' . \n";
+        
+        query+=reification;
+        counter ++;
+    }
+    return query;
+}
+
+exports.modify = function (query) {
+    return encodeURIComponent(prefixes +
+        "INSERT INTO <http://explorer.nexacenter.org/feed> " +
+        "{" + query + "}");
+}
+
+exports.test = function() {
+    return encodeURIComponent(prefixes + 
+        "CONSTRUCT+{%3Fsubject+%3Fproperty+%3Fobject+.}%0D%0AWHERE+{%3Fsubject+%3Fproperty+%3Fobject+.}+LIMIT+100");
+}
+
+exports.launchSparqlQuery = function (hostName, path, port, request, response, query) {
 
     var result = "";
 
     console.info(decodeURIComponent(query));
 
     var options = {
-        host: host,
-        path: "/sparql/select?query=" + (typeof(query) === "function" ? query() : query), /// XXX
-        port: "8181",
+        host: hostName,
+        path: path + (typeof(query) === "function" ? query() : query), /// XXX
+        port: port,
         method: "GET",
         headers: {
             accept: "text/turtle"

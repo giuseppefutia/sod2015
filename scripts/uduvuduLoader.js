@@ -21,6 +21,8 @@ var launchPOIsQuery = function(poiSource, eventResource){
 var loadEvent = function (eventResource) {
     var eventStore = new rdf.LdpStore();
     var eventSource = 'eventProperties/' + eventResource;
+
+    
     $("#poi2").html("") //XXX Clean POI results when you load a new event
 
     alertInfo("event details...");
