@@ -1,4 +1,5 @@
 var url = "http://pentos.polito.it:8890/sparql?default-graph-uri=http://explorer.nexacenter.org/history";
+var urlMaster = "http://pentos.polito.it:8890/sparql?default-graph-uri=http://explorer.nexacenter.org/master";
 
 var query = "SELECT ?a ?b ?c WHERE {?a ?b ?c .}"
 
@@ -22,28 +23,31 @@ function sparqlGet(theUrl) {
                 resArray[results[i].a.value][results[i].b.value] = results[i].c.value;
             }
             for (var i in resArray) {
-                //console.log(resArray[i]);
+                console.log(resArray[i]);
                 if (resArray[i]['http://www.w3.org/1999/02/22-rdf-syntax-ns#type'] !== "commit") {
-                    var tableRef = document.getElementById('mainTable');
-                    var newRow = tableRef.insertRow(tableRef.rows.length);
-                    if (resArray[i]['status'] === "approved") {
-                        newRow.className = "success";
-                    } else if (resArray[i]['status'] === "rejected") {
-                        newRow.className = "danger";
-                    } else if (resArray[i]['status'] === "pending") {
-                        newRow.className = "warning";
-                    }
-                    var newCell0 = newRow.insertCell(0);
-                    var newCell1 = newRow.insertCell(1);
-                    var newCell2 = newRow.insertCell(2);
-                    var newText0 = resArray[i]['http://www.w3.org/1999/02/22-rdf-syntax-ns#subject'] + "<br>" + resArray[i]['http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate'] + "<br><b>" + resArray[i].oldObject + "</b> <span class='glyphicon glyphicon-arrow-right' aria-hidden='true'></span> <b>" + resArray[i]['http://www.w3.org/1999/02/22-rdf-syntax-ns#object'] + "</b>";
-                    var newText1 = "Proposed by: " + resArray[i]['dc:Author'] + " at: " + new Date(resArray[i]['dc:time'] * 1000) + "<br>Analyzed by: " + resArray[i]['hasAdmin'] + " at: " + new Date(resArray[i]['checkTime'] * 1000) + "<br>Status:<i> " + resArray[i]['status'] + "</i>";
-                    var newText2 = '<button type="button" class="btn btn-default" onclick="rollbackTriple(\'' + i + '\', \'' + resArray[i]['status'] + '\')"><span class="glyphicon glyphicon glyphicon-arrow-left" aria-hidden="true"></span></button>';
-                    newCell0.innerHTML = newText0;
-                    newCell1.innerHTML = newText1;
-                    if (resArray[i]['status'] !== "pending") {
-                        newCell2.innerHTML = newText2;
-                    }
+                    var getSubjectLabel = "SELECT ?a WHERE {<" + resArray[i]['http://www.w3.org/1999/02/22-rdf-syntax-ns#subject'] + "> <http://www.w3.org/2000/01/rdf-schema#label> ?a .}"
+                    getLabel(resArray[i], urlMaster + "&query=" + encodeURIComponent(getSubjectLabel) + "&format=json", function(subject, array) {
+                        var tableRef = document.getElementById('mainTable');
+                        var newRow = tableRef.insertRow(tableRef.rows.length);
+                        if (array['status'] === "approved") {
+                            newRow.className = "success";
+                        } else if (array['status'] === "rejected") {
+                            newRow.className = "danger";
+                        } else if (array['status'] === "pending") {
+                            newRow.className = "warning";
+                        }
+                        var newCell0 = newRow.insertCell(0);
+                        var newCell1 = newRow.insertCell(1);
+                        var newCell2 = newRow.insertCell(2);
+                        var newText0 = subject + "<br>" + array['http://www.w3.org/1999/02/22-rdf-syntax-ns#predicate'] + "<br><b>" + array.oldObject + "</b> <span class='glyphicon glyphicon-arrow-right' aria-hidden='true'></span> <b>" + array['http://www.w3.org/1999/02/22-rdf-syntax-ns#object'] + "</b>";
+                        var newText1 = "Proposed by: " + array['dc:Author'] + " at: " + new Date(array['dc:time'] * 1000) + "<br>Analyzed by: " + array['hasAdmin'] + " at: " + new Date(array['checkTime'] * 1000) + "<br>Status:<i> " + array['status'] + "</i>";
+                        var newText2 = '<button type="button" class="btn btn-default" onclick="rollbackTriple(\'' + i + '\', \'' + array['status'] + '\')"><span class="glyphicon glyphicon glyphicon-arrow-left" aria-hidden="true"></span></button>';
+                        newCell0.innerHTML = newText0;
+                        newCell1.innerHTML = newText1;
+                        if (array['status'] !== "pending") {
+                            newCell2.innerHTML = newText2;
+                        }
+                    });
                 }
             }
         }
@@ -75,6 +79,16 @@ function runUpdate(theUrl) {
         success: function(_data) {
             $("#mainTable").html("");
             sparqlGet(queryUrl);
+        }
+    });
+}
+
+function getLabel(array, theUrl, callback) {
+    $.ajax({
+        dataType: "jsonp",
+        url: theUrl,
+        success: function(_data) {
+            callback(_data.results.bindings[0].a.value, array);
         }
     });
 }
